@@ -3,6 +3,8 @@ import { useWeb3React } from "@web3-react/core";
 import { ethers } from 'ethers';
 import useContract from "../hooks/useContract";
 import BigNumber from 'bignumber.js';
+import * as QUERIES from '../utils/queries'
+import * as gql from '../utils/gql'
 import { RFI_TOKEN_DECIMAL, parseBalance, parseSFIBalance } from '../util';
 import { getStakingRewardsAddress, getSfiAddress } from '../utils/addressHelpers.js';
 import background from './CSS/ICE-background.png';
@@ -10,52 +12,16 @@ import icicles from "./CSS/Icicles.png";
 import banner from "./CSS/IceBanner.png";
 import '../Components/CSS/styles.css';
 import useBlockNumber from "../hooks/useBlockNumber";
-
 // import { AbiItem } from "web3-utils";
 
 // Abis
 import stakingrewardsABI from "../config/abi/stakingrewards.json";
 import sfiABI from "../config/abi/sfi.json";
+import contracts from '../config/constants/contracts';
 
 // Addresses
 const stakingrewardsAddress = getStakingRewardsAddress();
 const sfiAddress = getSfiAddress();
-
-const GRAPH_URL = "https://api.thegraph.com/subgraphs/name/dasconnor/pangolin-dex";
-
-const TOKEN = `
-query Token($id: String) {
-  token(id: $id){
-    id
-    symbol
-    name
-    decimals
-    derivedETH
-  }
-}`;
-
-const AVAXPRICE = `
-query AVAXPrice($id: Int, $block: Int) {
-  bundle(id: $id, block: {number: $block}) {
-    ethPrice
-  }
-}
-`;
-
-async function request(query, variables = {}, url = GRAPH_URL) {
-  const _ = await fetch(url, {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({
-      query,
-      variables,
-    }),
-  });
-
-  const {data} = await _.json();
-
-  return data;
-}
 
 const Farm = () => {
     const { account } = useWeb3React();
@@ -65,65 +31,74 @@ const Farm = () => {
     const [earnedBalance, setEarnedBalance] = useState();
     const [stakedBalance, setStakedBalance] = useState();
     const [priceSFI, setPriceSFI] = useState();
+    const [burnedSFI, setBurnedSFI] = useState();
+    const [apr, setApr] = useState();
 
     const fetchStakeContract = useContract(stakingrewardsAddress, stakingrewardsABI, true);
     const fetchTokenContract = useContract(sfiAddress, sfiABI, true);
+
+    const blockNumber = useBlockNumber().data;
+
     
     useEffect(async () => {
         setStakeContract(await fetchStakeContract);
         setTokenContract(await fetchTokenContract);
     }, [fetchStakeContract, fetchTokenContract]);
-    
+
     const setBals = async () => {
 
         if(!sfiBalance && ! earnedBalance){
             setSFIBalance(parseSFIBalance(await tokenContract.balanceOf(account)));
             setEarnedBalance(parseSFIBalance(await stakeContract.earned(account)));
         }
-
+    
         setStakedBalance(parseSFIBalance(await stakeContract.balanceOf(account)));
+    
+        await tokenContract.balanceOf("0xCCA162Fe23AB614174bC99A9e9019d211133a8d1")
+        .then(balance =>
+            tokenContract.decimals()
+            .then((decimals) => {
+                let burned = balance.div(10**decimals);
+                setBurnedSFI(burned.toString());
+            })
+        );
+
+        let rewardRate = await stakeContract.rewardRate();
+        let totalStaked = await tokenContract.balanceOf(stakeContract.address);
+
+        setApr((rewardRate.toString() * 52) / (totalStaked.toString() * 10**9));
     }
 
     if(tokenContract && stakeContract){
         setBals();
     }
 
-    console.log("stake contract", stakeContract);
-    console.log("sfi contract", tokenContract);
+    const graphetch = async () => {
+        let rawPriceSFI;
+        let ethPrice;
 
-    const blockNumber = useBlockNumber().data
+        await gql.request(QUERIES.TOKEN,{
+        id: "0x1f1fe1ef06ab30a791d6357fdf0a7361b39b1537"
+        })
+        .then(res => rawPriceSFI = res.token.derivedETH);
 
+        await gql.request(QUERIES.AVAXPRICE,{
+        id: 1,
+        block: await blockNumber,
+        })
+        .then(res => ethPrice = res.bundle.ethPrice);
 
-  let rawPriceSFI;
-  let ethPrice;
+        setPriceSFI(rawPriceSFI * ethPrice);
 
-  const graphetch = async () => {
-    // const blockNumber = library ? await library.getBlockNumber() : 1788148;
+        // console.log("Price:", rawPriceSFI * ethPrice, "SFI:", priceSFI, "AVAX:", ethPrice, "Blocknumber:", blockNumber);
 
-    await request(TOKEN,{
-      id: "0x1f1fe1ef06ab30a791d6357fdf0a7361b39b1537"
-    })
-    .then(res => rawPriceSFI = res.token.derivedETH);
+    }
 
-    await request(AVAXPRICE,{
-      id: 1,
-      block: await blockNumber,
-    })
-    .then(res => ethPrice = res.bundle.ethPrice);
-
-    setPriceSFI(rawPriceSFI * ethPrice);
-
-    console.log("Price:", rawPriceSFI * ethPrice, "SFI:", priceSFI, "AVAX:", ethPrice, "Blocknumber:", blockNumber);
-
-  }
-
-  if(blockNumber){
-    graphetch();
-  }
+    if(blockNumber){
+        graphetch();
+    }
 
     const handleStake = async (amount) => {
-        // await tokenContract.approve(stakeContract.address, new BigNumber(amount).times(RFI_TOKEN_DECIMAL).toString());
-        // await stakeContract.stake(new BigNumber(amount).times(RFI_TOKEN_DECIMAL).toString());
 
         const formattedAmount = new BigNumber(amount).times(RFI_TOKEN_DECIMAL).toString();
         const approvalTxn = await tokenContract.approve(stakeContract.address, formattedAmount);
@@ -184,7 +159,9 @@ const Farm = () => {
         </div>
 
         <main className="Parent1">
-            <p>Price SFI: {priceSFI ? `$${priceSFI}` : "Loading"}</p>
+            <p>Price SFI: {priceSFI ? `$${priceSFI}` : "Loading"}
+            Burned SFI: {burnedSFI ? burnedSFI : "Loading"}
+            APR: {apr ? apr : "Loading"}</p>
             <div className="Stake1">
             <h1>Stake SFI</h1>
             <div className="AvailabePGL">

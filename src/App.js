@@ -1,8 +1,6 @@
 import { verifyMessage } from "@ethersproject/wallet";
 import { useWeb3React } from "@web3-react/core";
 import { BigNumber } from "@ethersproject/bignumber";
-// import Head from "next/head";
-// import Link from "next/link";
 import { useEffect, useState } from "react";
 import Account from "./Components/Account";
 import Pool from "./Components/Pool";
@@ -10,7 +8,6 @@ import Farm from './Components/Farm';
 import ETHBalance from "./Components/ETHBalance";
 import useEagerConnect from "./hooks/useEagerConnect";
 import { createClient } from 'url';
-// import usePersonalSign, { hexlify } from "../hooks/usePersonalSign";
 
 export default function Home() {
   const { account, library } = useWeb3React();

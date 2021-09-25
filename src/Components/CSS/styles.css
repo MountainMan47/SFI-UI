@@ -162,7 +162,7 @@ a{
   width: 900px;
   margin: 0 auto;
   border-color: #F5A962;
-  border-radius: 0.5rem;
+  border-radius: .5rem;
   border: .5rem solid #F5A962;
   position: absolute;
   top: 650px;
