@@ -1,0 +1,521 @@
+body {
+  margin: 0;
+  background-image: url('ICE-background.png');
+  background-size: 100%;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  font-size: 100%;
+  vertical-align: baseline;
+  background: transparent;
+}
+
+div {
+  border-top: 0;
+}
+
+hr {
+  display: block;
+  border: 3px solid black;
+  width: 100%;
+  top: 10px;
+  float: none;
+}
+
+h1 {
+  margin: 0;
+  text-align: center;
+  color: #F5A962;
+}
+
+p {
+  margin: 0;
+  text-align: center;
+  color: #F5A962;
+  top: 50%;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+
+}
+
+ul {
+  width: 100%;
+  height: 60px;
+  text-align: center;
+}
+
+li {
+  display: inline;
+}
+
+a{
+  background-color: transparent;
+  color: black;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  top: 50%;
+  -ms-transform: translateY(-25%);
+  transform: translateY(-25%);
+
+}
+.lowertext{
+  position: absolute;
+  top: 5px;
+  left: 50%;
+  -ms-transform: translateX(-50%);
+  transform: translateX(-50%);
+  font-size: 14px;
+  font-weight: 600;
+
+}
+.FarmsScreen {
+  margin: 0;
+  background-image: url('./ICE-background.png');
+  background-size: 100%;
+  position: absolute;
+  height: 2000px;
+  width: 100%;
+}
+
+
+.portrait {
+  height: 80px;
+  width: 30px;
+}
+
+.landscape {
+  height: 30px;
+  width: 80px;
+}
+
+.square {
+  height: 75px;
+  width: 75px;
+}
+
+.object-fit {
+  object-fit: fill;
+}
+
+.Launchbutton {
+  font: bold 11px Arial;
+  text-decoration: none;
+  background-color: #EEEEEE;
+  color: #333333;
+  padding: 2px 6px 2px 6px;
+  border-top: 1px solid #CCCCCC;
+  border-right: 1px solid #333333;
+  border-bottom: 1px solid #333333;
+  border-left: 1px solid #CCCCCC;
+}
+
+
+.Icicles1 {
+  height: 50px;
+  width: 25%;
+  position: relative;
+  top: 75px;
+}
+
+.Icicles2 {
+  height: 50px;
+  width: 25%;
+  position: relative;
+  top: 75px;
+  right: 5px;
+}
+
+.Icicles3 {
+  height: 50px;
+  width: 25%;
+  position: relative;
+  top: 75px;
+  right: 10px;
+}
+
+.Icicles4 {
+  height: 50px;
+  width: 25.3%;
+  position: relative;
+  top: 25px;
+  left: 74.8%
+}
+
+.linebreak {
+  background-color: Black;
+  height: 2px;
+  width: 100%;
+  position: absolute;
+  top: 35px;
+  margin-left: 0;
+}
+
+.Parent1 {
+  background-color: White;
+  height: 550px;
+  width: 900px;
+  margin: 0 auto;
+  border-color: #F5A962;
+  border-radius: 0.5rem;
+  border: .5rem solid #F5A962;
+  position: absolute;
+  top: 650px;
+  left: 50%;
+  margin-left: -450px;
+}
+
+.Stake1 {
+  background: linear-gradient(to bottom, #5BAAEC, #8AC4D0);
+  height: 500px;
+  width: 400px;
+  position: absolute;
+  display: inline-block;
+  position: absolute;
+  left: 30px;
+  top: 50%;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  border: .4rem solid transparent;
+}
+
+.Stake1:hover {
+  padding: 1rem;
+  background-color: #3C8DAD;
+  border-radius: 0.5rem;
+  border: .4rem solid #00ff99;
+}
+
+.Stake2 {
+  background: linear-gradient(to bottom, #5BAAEC, #8AC4D0);
+  height: 500px;
+  width: 400px;
+  border-color: #F5A962;
+  position: absolute;
+  display: inline-block;
+  position: absolute;
+  right: 30px;
+  top: 50%;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  border: .4rem solid transparent;
+}
+
+.Stake2:hover {
+  padding: 1rem;
+  background-color: #3C8DAD;
+  border-radius: 0.5rem;
+  border: .4rem solid #00ff99;
+}
+
+.Parent2 {
+  background-color: white;
+  height: 550px;
+  width: 900px;
+  border-color: #F5A962;
+  border-radius: 0.5rem;
+  border: .5rem solid #F5A962;
+  position: absolute;
+  top: 1300px;
+  left: 50%;
+  margin-left: -450px;
+}
+
+.Stake3 {
+  background: linear-gradient(to bottom, #3F3697, #7B417D);
+  height: 500px;
+  width: 400px;
+  border-color: #F5A962;
+  position: absolute;
+  display: inline-block;
+  position: absolute;
+  left: 30px;
+  top: 50%;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  border: .4rem solid transparent;
+}
+
+.Stake3:hover {
+  padding: 1rem;
+  background-color: #3F3697;
+  border-radius: 0.5rem;
+  border: .4rem solid #AE00FB;
+}
+
+.Stake4 {
+  background: linear-gradient(to bottom, #3F3697, #7B417D);
+  height: 500px;
+  width: 400px;
+  border-color: #F5A962;
+  position: absolute;
+  display: inline-block;
+  position: absolute;
+  right: 30px;
+  top: 50%;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  border: .4rem solid transparent;
+}
+
+.Stake4:hover {
+  padding: 1rem;
+  background-color: #F0D9FF;
+  border-radius: 0.5rem;
+  border: .4rem solid #AE00FB;
+}
+
+.AvailabePGL {
+  background-color: #DDDDDD;
+  height: 120px;
+  width: 170px;
+  border-radius: .5rem;
+  position: absolute;
+  left: 20px;
+  top: 80px;
+  border-radius: 0.5rem;
+  border: 3px solid black;
+}
+
+.EarnedPGL {
+  background-color: #E1E5EA;
+  height: 120px;
+  width: 170px;
+  border-radius: .5rem;
+  border: 3px solid #929AAB;
+  position: absolute;
+  Right: 20px;
+  top: 80px;
+}
+
+.StakePGL {
+  background-color: transparent;
+  height: 110px;
+  width: 350px;
+  border-radius: .5rem;
+  border: 3px solid White;
+  position: absolute;
+  left: 50%;
+  -ms-transform: translateX(-50%);
+  transform: translateX(-50%);
+  top: 220px;
+}
+
+.WithdrawPGL {
+  background-color: transparent;
+  height: 110px;
+  width: 350px;
+  border-radius: .5rem;
+  border: 3px solid black;
+  position: absolute;
+  left: 50%;
+  -ms-transform: translateX(-50%);
+  transform: translateX(-50%);
+  top: 350px;
+}
+
+.banner {
+  height: 350px;
+  width: 900px;
+  position: absolute;
+  left: 50%;
+  top: 100px;
+  margin-left: -450px;
+  border-radius: .5rem;
+}
+
+.NavigationBar {
+  height: 75px;
+  Width: 100%;
+  position: absolute;
+  background-color: #83cdef;
+
+  border-top: 10px;
+  border-bottom: 10px;
+  border-style: ridge;
+  border-left: none;
+  border-right: none;
+  border-top-color: #865439;
+  border-bottom-color: #865439;
+}
+
+.NavICE {
+  height: 120px;
+  Width: 100%;
+  position: absolute;
+  background-color: #83cdef;
+
+}
+
+.NavButton1 {
+    display: inline-block;
+    position: absolute;
+}
+
+  .NavButtons {
+    display: inline-block;
+    position: absolute;
+    margin-top: 15px
+  }
+
+  .SocialBar {
+    height: 75px;
+    Width: 100%;
+    position: absolute;
+    background-color: transparent;
+    bottom: 0px;
+    border-left: none;
+    border-right: none;
+  }
+
+  .buttons {
+    margin: 10%;
+    text-align: center;
+  }
+
+  .btn-hover {
+    width: 250px;
+    font-size: 20px;
+    font-weight: 600;
+    color: #fff;
+    cursor: pointer;
+    margin: 20px;
+    height: 75px;
+    text-align: center;
+    border: none;
+    background-size: 300% 100%;
+    position: absolute;
+    left: 50%;
+    top: 40%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+    -ms-transform: translateX(-50%);
+    transform: translateX(-50%);
+    border-radius: 50px;
+    moz-transition: all .4s ease-in-out;
+    -o-transition: all .4s ease-in-out;
+    -webkit-transition: all .4s ease-in-out;
+    transition: all .4s ease-in-out;
+  }
+
+  .btn-hover:hover {
+    background-position: 100% 0;
+    moz-transition: all .4s ease-in-out;
+    -o-transition: all .4s ease-in-out;
+    -webkit-transition: all .4s ease-in-out;
+    transition: all .4s ease-in-out;
+  }
+
+  .btn-hover:focus {
+    outline: none;
+  }
+
+  .btn-hover.color-1 {
+    background-image: linear-gradient(to right, #7B417D, #3F3697, #25aae1, #40e495);
+    box-shadow: 0 4px 15px 0 rgba(49, 196, 190, 0.75);
+  }
+
+  /*Code for HOME PAGE ONLY*/
+  .HomeSFI {
+    background: linear-gradient(to bottom, #5BAAEC, #8AC4D0);
+    height: 200px;
+    width: 800px;
+    ;
+    position: absolute;
+    display: inline-block;
+    position: absolute;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    border: .4rem solid transparent;
+    top: 700px;
+    left: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+    margin-left: -400px;
+  }
+
+  .HomeSL3 {
+    background: linear-gradient(to bottom, #3F3697, #7C83FD);
+    height: 200px;
+    width: 800px;
+    position: absolute;
+    display: inline-block;
+    position: absolute;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    border: .4rem solid transparent;
+    top: 950px;
+    left: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+    margin-left: -400px;
+  }
+
+  .linebreakHome {
+    background-color: #FFB344;
+    height: 3px;
+    width: 200px;
+    position: absolute;
+    top: 35px;
+    left: 50%;
+    -ms-transform: translateX(-50%);
+    transform: translateX(-50%);
+  }
+
+  .SFIprice {
+    background-color: White;
+    height: 150px;
+    width: 200px;
+    position: absolute;
+    display: inline-block;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    border: .4rem solid transparent;
+    top: 50%;
+    left: 50px;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+  }
+
+  .SFIMC {
+    background-color: White;
+    height: 150px;
+    width: 200px;
+    position: absolute;
+    display: inline-block;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    border: .4rem solid transparent;
+    top: 50%;
+    left: 550px;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+  }
+
+  .SFILiq {
+    background-color: White;
+    height: 150px;
+    width: 200px;
+    position: absolute;
+    display: inline-block;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    border: .4rem solid transparent;
+    top: 50%;
+    left: 300px;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+  }
