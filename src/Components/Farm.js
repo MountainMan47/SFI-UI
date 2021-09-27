@@ -33,6 +33,7 @@ const Farm = () => {
     const [priceSFI, setPriceSFI] = useState();
     const [burnedSFI, setBurnedSFI] = useState();
     const [apr, setApr] = useState();
+    const [sfiTVL, setSfiTVL] = useState();
 
     const fetchStakeContract = useContract(stakingrewardsAddress, stakingrewardsABI, true);
     const fetchTokenContract = useContract(sfiAddress, sfiABI, true);
@@ -44,34 +45,6 @@ const Farm = () => {
         setStakeContract(await fetchStakeContract);
         setTokenContract(await fetchTokenContract);
     }, [fetchStakeContract, fetchTokenContract]);
-
-    const setBals = async () => {
-
-        if(!sfiBalance && ! earnedBalance){
-            setSFIBalance(parseSFIBalance(await tokenContract.balanceOf(account)));
-            setEarnedBalance(parseSFIBalance(await stakeContract.earned(account)));
-        }
-    
-        setStakedBalance(parseSFIBalance(await stakeContract.balanceOf(account)));
-    
-        await tokenContract.balanceOf("0xCCA162Fe23AB614174bC99A9e9019d211133a8d1")
-        .then(balance =>
-            tokenContract.decimals()
-            .then((decimals) => {
-                let burned = balance.div(10**decimals);
-                setBurnedSFI(burned.toString());
-            })
-        );
-
-        let rewardRate = await stakeContract.rewardRate();
-        let totalStaked = await tokenContract.balanceOf(stakeContract.address);
-
-        setApr((rewardRate.toString() * 52) / (totalStaked.toString() * 10**9));
-    }
-
-    if(tokenContract && stakeContract){
-        setBals();
-    }
 
     const graphetch = async () => {
         let rawPriceSFI;
@@ -96,6 +69,37 @@ const Farm = () => {
 
     if(blockNumber){
         graphetch();
+    }
+
+    const setBals = async () => {
+
+        if(!sfiBalance && ! earnedBalance){
+            setSFIBalance(parseSFIBalance(await tokenContract.balanceOf(account)));
+            setEarnedBalance(parseSFIBalance(await stakeContract.earned(account)));
+        }
+    
+        setStakedBalance(parseSFIBalance(await stakeContract.balanceOf(account)));
+    
+        await tokenContract.balanceOf("0xCCA162Fe23AB614174bC99A9e9019d211133a8d1")
+        .then(balance =>
+            tokenContract.decimals()
+            .then((decimals) => {
+                let burned = balance.div(10**decimals);
+                setBurnedSFI(burned.toString());
+            })
+        );
+
+        let rewardRate = await stakeContract.rewardRate();
+        let totalStaked = await tokenContract.balanceOf(stakeContract.address);
+
+        setApr((rewardRate.toString() * 52) / (totalStaked.toString() * 10**9));
+
+        setSfiTVL(((await stakeContract.totalSupply()) / 10**9) * priceSFI);
+
+    }
+
+    if(tokenContract && stakeContract){
+        setBals();
     }
 
     const handleStake = async (amount) => {
@@ -164,6 +168,7 @@ const Farm = () => {
             APR: {apr ? apr : "Loading"}</p>
             <div className="Stake1">
             <h1>Stake SFI</h1>
+            <p><b>TVL:</b>${sfiTVL}</p>
             <div className="AvailabePGL">
 
                 <p className="lowertext">
