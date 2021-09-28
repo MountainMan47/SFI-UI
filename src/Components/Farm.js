@@ -5,8 +5,8 @@ import useContract from "../hooks/useContract";
 import BigNumber from 'bignumber.js';
 import * as QUERIES from '../utils/queries'
 import * as gql from '../utils/gql'
-import { RFI_TOKEN_DECIMAL, parseBalance, parseSFIBalance } from '../util';
-import { getStakingRewardsAddress, getSfiAddress, getSfiAvaxPGLAddress } from '../utils/addressHelpers.js';
+import { RFI_TOKEN_DECIMAL, TOKEN_DECIMAL, parseBalance, parseSFIBalance } from '../util';
+import { getStakingRewardsAddress, getStakingRewardsPGLAddress, getSfiAddress, getSfiAvaxPGLAddress } from '../utils/addressHelpers.js';
 import background from './CSS/ICE-background.png';
 import icicles from "./CSS/Icicles.png";
 import banner from "./CSS/IceBanner.png";
@@ -21,18 +21,22 @@ import pglABI from "../config/abi/pgl.json";
 import contracts from '../config/constants/contracts';
 
 // Addresses
-const stakingrewardsAddress = getStakingRewardsAddress();
+const stakingRewardsAddress = getStakingRewardsAddress();
+const stakingRewardsPGLAddress = getStakingRewardsPGLAddress();
 const sfiAddress = getSfiAddress();
 const sfiAvaxAddress = getSfiAvaxPGLAddress();
 
 const Farm = () => {
     const { account } = useWeb3React();
     const [stakeContract, setStakeContract] = useState();
+    const [stakePGLContract, setStakePGLContract] = useState();
     const [tokenContract, setTokenContract] = useState();
     const [sfiAvaxContract, setSfiAvaxContract] = useState();
     const [sfiBalance, setSFIBalance] = useState();
-    const [earnedBalance, setEarnedBalance] = useState();
-    const [stakedBalance, setStakedBalance] = useState();
+    const [earnedBalanceFromSFI, setEarnedBalanceFromSFI] = useState();
+    const [earnedBalanceFromPGL, setEarnedBalanceFromPGL] = useState();
+    const [stakedSFIBalance, setStakedSFIBalance] = useState();
+    const [stakedPGLBalance, setStakedPGLBalance] = useState();
     const [sfiAvaxBalance, setSfiAvaxBalance] = useState();
     const [priceSFI, setPriceSFI] = useState();
     const [burnedSFI, setBurnedSFI] = useState();
@@ -40,7 +44,8 @@ const Farm = () => {
     const [sfiTVL, setSfiTVL] = useState();
     const [sfiAvaxTVL, setSfiAvaxTVL] = useState();
 
-    const fetchStakeContract = useContract(stakingrewardsAddress, stakingrewardsABI, true);
+    const fetchStakeContract = useContract(stakingRewardsAddress, stakingrewardsABI, true);
+    const fetchStakePGLContract = useContract(stakingRewardsPGLAddress, stakingrewardsABI, true);
     const fetchTokenContract = useContract(sfiAddress, sfiABI, true);
     const fetchSfiAvaxContract = useContract(sfiAvaxAddress, pglABI, true);
 
@@ -50,8 +55,9 @@ const Farm = () => {
     useEffect(async () => {
         setSfiAvaxContract(await fetchSfiAvaxContract);
         setStakeContract(await fetchStakeContract);
+        setStakePGLContract(await fetchStakePGLContract);
         setTokenContract(await fetchTokenContract);
-    }, [fetchStakeContract, fetchTokenContract, fetchSfiAvaxContract]);
+    }, [fetchStakeContract, fetchTokenContract, fetchSfiAvaxContract, fetchStakePGLContract]);
 
     const graphetch = async () => {
         let rawPriceSFI;
@@ -80,14 +86,15 @@ const Farm = () => {
 
     const setBals = async () => {
 
-        if(!sfiBalance && !earnedBalance && !sfiAvaxBalance){
-            await sfiAvaxContract.balanceOf(account).then(bal => console.log((bal / 10**18).toString()));
+        if(!sfiBalance && !earnedBalanceFromSFI && !sfiAvaxBalance){
             setSFIBalance(parseSFIBalance(await tokenContract.balanceOf(account)));
-            setEarnedBalance(parseSFIBalance(await stakeContract.earned(account)));
+            setEarnedBalanceFromSFI(parseSFIBalance(await stakeContract.earned(account)));
+            setEarnedBalanceFromPGL(parseSFIBalance(await stakePGLContract.earned(account)))
             setSfiAvaxBalance((await sfiAvaxContract.balanceOf(account) / 10**18));
         }
     
-        setStakedBalance(parseSFIBalance(await stakeContract.balanceOf(account)));
+        setStakedSFIBalance(parseSFIBalance(await stakeContract.balanceOf(account)));
+        setStakedPGLBalance(parseBalance(await stakePGLContract.balanceOf(account)));
     
         // Pretty sure this should be replaced with Vitalik's address to calc burn on mainnet... ?
         await tokenContract.balanceOf("0xCCA162Fe23AB614174bC99A9e9019d211133a8d1")
@@ -112,7 +119,7 @@ const Farm = () => {
 
         const lockedSFI = parseSFIBalance((await sfiAvaxContract.getReserves())[0].toString());
         const sfiAvaxTotalSupply = (await sfiAvaxContract.totalSupply()).toString() / 10**18;
-        const sfiAvaxStaked = await sfiAvaxBalance // just using this to test while 100% of pgl is "staked"
+        const sfiAvaxStaked = (await sfiAvaxContract.balanceOf(stakingRewardsPGLAddress)) * 10**18; // just using this to test while 100% of pgl is "staked"
 
         // console.log(lockedSFI, sfiAvaxTotalSupply, await sfiAvaxBalance);
         // console.log("TVL:", (sfiAvaxStaked / sfiAvaxTotalSupply) * lockedSFI * priceSFI);
@@ -127,16 +134,27 @@ const Farm = () => {
         setBals();
     }
 
-    const handleStake = async (amount) => {
+    const handleStake = async (amount, decimal, token, stake) => {
 
-        const formattedAmount = new BigNumber(amount).times(RFI_TOKEN_DECIMAL).toString();
-        const approvalTxn = await tokenContract.approve(stakeContract.address, formattedAmount);
+        const formattedAmount = new BigNumber(amount).times(decimal).toString();
+        const approvalTxn = await token.approve(stake.address, formattedAmount);
         console.log(`Approving ${amount} SFI`);
         await approvalTxn.wait();
-        await stakeContract.stake(formattedAmount);
+        await stake.stake(formattedAmount);
         console.log(`Staked ${amount} SFI`);
 
     }
+
+    // const handleStake = async (amount, decimal, token, stake) => {
+
+    //     const formattedAmount = new BigNumber(amount).times(RFI_TOKEN_DECIMAL).toString();
+    //     const approvalTxn = await tokenContract.approve(stakeContract.address, formattedAmount);
+    //     console.log(`Approving ${amount} SFI`);
+    //     await approvalTxn.wait();
+    //     await stakeContract.stake(formattedAmount);
+    //     console.log(`Staked ${amount} SFI`);
+
+    // }
 
     const handleGetReward = async () => {
         await stakeContract.getReward();
@@ -216,7 +234,7 @@ const Farm = () => {
                 <div className="linebreak">
                     <br/>
                     <center>
-                        {earnedBalance !== undefined ? earnedBalance : "Loading"}
+                        {earnedBalanceFromSFI !== undefined ? earnedBalanceFromSFI : "Loading"}
                     </center>
                 </div>
             </div>
@@ -227,14 +245,14 @@ const Farm = () => {
                 <div className="linebreak">
                     <br/>
                     <center>
-                        {stakedBalance !== undefined ? stakedBalance : "Loading"}
+                        {stakedSFIBalance !== undefined ? stakedSFIBalance : "Loading"}
                         <br/><br/>
                         <form
                             onSubmit={(e) => {
                             e.preventDefault();
                             const target = e.target;
                             const amount = target.amount.value;
-                            handleStake(amount);
+                            handleStake(amount, RFI_TOKEN_DECIMAL, tokenContract, stakeContract);
                             }}>
                         <input
                             type="amount"
@@ -284,6 +302,10 @@ const Farm = () => {
                 Earned SFI
                 </p>
                 <div className="linebreak">
+                <br/>
+                <center>
+                        {earnedBalanceFromPGL !== undefined ? earnedBalanceFromPGL : "Loading"}
+                    </center>
                 </div>
             </div>
             <div className="StakePGL">
@@ -291,6 +313,26 @@ const Farm = () => {
                 Staked PGL
                 </p>
                 <div className="linebreak">
+                <br/>
+                    <center>
+                        {stakedPGLBalance !== undefined ? stakedPGLBalance : "Loading"}
+                        <br/><br/>
+                        <form
+                            onSubmit={(e) => {
+                            e.preventDefault();
+                            const target = e.target;
+                            const amount = target.amount.value;
+                            handleStake(amount, TOKEN_DECIMAL, sfiAvaxContract, stakePGLContract);
+                            }}>
+                        <input
+                            type="amount"
+                            name="amount" 
+                            placeholder="Amount to Stake"
+                            required
+                        />
+                        <button>Stake</button>
+                        </form>
+                    </center>
                 </div>
             </div>
 

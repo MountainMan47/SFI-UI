@@ -12,6 +12,10 @@ export const getStakingRewardsAddress = () => {
     return getAddress(addresses.stakingReward);
 }
 
+export const getStakingRewardsPGLAddress = () => {
+    return getAddress(addresses.stakingRewardPGL);
+}
+
 export const getSfiAddress = () => {
     return getAddress(tokens.sfi.address);
 }

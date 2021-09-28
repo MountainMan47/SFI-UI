@@ -48,4 +48,6 @@ export const parseBalance = (balance, decimals = 18, decimalsToDisplay = 3) =>
   export const parseSFIBalance = (balance, decimals = 9, decimalsToDisplay = 3) =>
   Number(formatUnits(balance, decimals)).toFixed(decimalsToDisplay);
 
-export const RFI_TOKEN_DECIMAL = new BigNumber(10).pow(9)
+export const RFI_TOKEN_DECIMAL = new BigNumber(10).pow(9);
+
+export const TOKEN_DECIMAL = new BigNumber(10).pow(18);
