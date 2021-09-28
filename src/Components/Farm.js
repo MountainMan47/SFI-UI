@@ -38,6 +38,7 @@ const Farm = () => {
     const [burnedSFI, setBurnedSFI] = useState();
     const [apr, setApr] = useState();
     const [sfiTVL, setSfiTVL] = useState();
+    const [sfiAvaxTVL, setSfiAvaxTVL] = useState();
 
     const fetchStakeContract = useContract(stakingrewardsAddress, stakingrewardsABI, true);
     const fetchTokenContract = useContract(sfiAddress, sfiABI, true);
@@ -98,14 +99,25 @@ const Farm = () => {
             })
         );
 
-        // Calc APR and TVL for single asset farm
+        // Calc APR and TVL for single asset pool
 
-        let rewardRate = await stakeContract.rewardRate();
-        let totalStaked = await tokenContract.balanceOf(stakeContract.address);
+        let rewardRateSFI = await stakeContract.rewardRate();
+        let totalStakedSFI = await tokenContract.balanceOf(stakeContract.address);
 
-        setApr((rewardRate.toString() * 52) / (totalStaked.toString() * 10**9));
+        setApr((rewardRateSFI.toString() * 52) / (totalStakedSFI.toString() * 10**9));
 
         setSfiTVL(((await stakeContract.totalSupply()) / 10**9) * priceSFI);
+
+        // Calc APR and TVL for SFI/AVAX pool
+
+        const lockedSFI = parseSFIBalance((await sfiAvaxContract.getReserves())[0].toString());
+        const sfiAvaxTotalSupply = (await sfiAvaxContract.totalSupply()).toString() / 10**18;
+        const sfiAvaxStaked = await sfiAvaxBalance // just using this to test while 100% of pgl is "staked"
+
+        // console.log(lockedSFI, sfiAvaxTotalSupply, await sfiAvaxBalance);
+        // console.log("TVL:", (sfiAvaxStaked / sfiAvaxTotalSupply) * lockedSFI * priceSFI);
+
+        setSfiAvaxTVL((sfiAvaxStaked / sfiAvaxTotalSupply) * lockedSFI * priceSFI);
 
         
 
@@ -250,6 +262,7 @@ const Farm = () => {
 
             <div className="Stake2">
             <h1>SFI-AVAX PGL</h1>
+            <p><b>TVL:</b>${sfiAvaxTVL}</p>
             <div className="AvailabePGL">
 
 
