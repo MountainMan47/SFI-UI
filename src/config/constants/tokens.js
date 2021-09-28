@@ -6,6 +6,13 @@ const tokens = {
             43114: "0x0Eventually",
         },
         decimals: 9,
+    },
+    sfiAvax: {
+        symbol: "PGL",
+        address: {
+            43113: "0x096Fb607aBac2f6401D635A03C0cc3dF265BfF19",
+            43114: "0x0Eventually",
+        }
     }
 }
 

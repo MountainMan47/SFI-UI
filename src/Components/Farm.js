@@ -6,7 +6,7 @@ import BigNumber from 'bignumber.js';
 import * as QUERIES from '../utils/queries'
 import * as gql from '../utils/gql'
 import { RFI_TOKEN_DECIMAL, parseBalance, parseSFIBalance } from '../util';
-import { getStakingRewardsAddress, getSfiAddress } from '../utils/addressHelpers.js';
+import { getStakingRewardsAddress, getSfiAddress, getSfiAvaxPGLAddress } from '../utils/addressHelpers.js';
 import background from './CSS/ICE-background.png';
 import icicles from "./CSS/Icicles.png";
 import banner from "./CSS/IceBanner.png";
@@ -17,19 +17,23 @@ import useBlockNumber from "../hooks/useBlockNumber";
 // Abis
 import stakingrewardsABI from "../config/abi/stakingrewards.json";
 import sfiABI from "../config/abi/sfi.json";
+import pglABI from "../config/abi/pgl.json";
 import contracts from '../config/constants/contracts';
 
 // Addresses
 const stakingrewardsAddress = getStakingRewardsAddress();
 const sfiAddress = getSfiAddress();
+const sfiAvaxAddress = getSfiAvaxPGLAddress();
 
 const Farm = () => {
     const { account } = useWeb3React();
     const [stakeContract, setStakeContract] = useState();
     const [tokenContract, setTokenContract] = useState();
+    const [sfiAvaxContract, setSfiAvaxContract] = useState();
     const [sfiBalance, setSFIBalance] = useState();
     const [earnedBalance, setEarnedBalance] = useState();
     const [stakedBalance, setStakedBalance] = useState();
+    const [sfiAvaxBalance, setSfiAvaxBalance] = useState();
     const [priceSFI, setPriceSFI] = useState();
     const [burnedSFI, setBurnedSFI] = useState();
     const [apr, setApr] = useState();
@@ -37,14 +41,16 @@ const Farm = () => {
 
     const fetchStakeContract = useContract(stakingrewardsAddress, stakingrewardsABI, true);
     const fetchTokenContract = useContract(sfiAddress, sfiABI, true);
+    const fetchSfiAvaxContract = useContract(sfiAvaxAddress, pglABI, true);
 
     const blockNumber = useBlockNumber().data;
 
     
     useEffect(async () => {
+        setSfiAvaxContract(await fetchSfiAvaxContract);
         setStakeContract(await fetchStakeContract);
         setTokenContract(await fetchTokenContract);
-    }, [fetchStakeContract, fetchTokenContract]);
+    }, [fetchStakeContract, fetchTokenContract, fetchSfiAvaxContract]);
 
     const graphetch = async () => {
         let rawPriceSFI;
@@ -73,13 +79,16 @@ const Farm = () => {
 
     const setBals = async () => {
 
-        if(!sfiBalance && ! earnedBalance){
+        if(!sfiBalance && !earnedBalance && !sfiAvaxBalance){
+            await sfiAvaxContract.balanceOf(account).then(bal => console.log((bal / 10**18).toString()));
             setSFIBalance(parseSFIBalance(await tokenContract.balanceOf(account)));
             setEarnedBalance(parseSFIBalance(await stakeContract.earned(account)));
+            setSfiAvaxBalance((await sfiAvaxContract.balanceOf(account) / 10**18));
         }
     
         setStakedBalance(parseSFIBalance(await stakeContract.balanceOf(account)));
     
+        // Pretty sure this should be replaced with Vitalik's address to calc burn on mainnet... ?
         await tokenContract.balanceOf("0xCCA162Fe23AB614174bC99A9e9019d211133a8d1")
         .then(balance =>
             tokenContract.decimals()
@@ -89,12 +98,16 @@ const Farm = () => {
             })
         );
 
+        // Calc APR and TVL for single asset farm
+
         let rewardRate = await stakeContract.rewardRate();
         let totalStaked = await tokenContract.balanceOf(stakeContract.address);
 
         setApr((rewardRate.toString() * 52) / (totalStaked.toString() * 10**9));
 
         setSfiTVL(((await stakeContract.totalSupply()) / 10**9) * priceSFI);
+
+        
 
     }
 
@@ -242,10 +255,12 @@ const Farm = () => {
 
 
                 <p className="lowertext">
-                Available SFI
+                Available PGL
                 </p>
 
                 <div className="linebreak">
+                    <br/>
+                    {sfiAvaxBalance}
                 </div>
                 <div className="enterbox">
                 </div>
@@ -260,7 +275,7 @@ const Farm = () => {
             </div>
             <div className="StakePGL">
                 <p className="lowertext">
-                Staked SFI
+                Staked PGL
                 </p>
                 <div className="linebreak">
                 </div>
@@ -268,7 +283,7 @@ const Farm = () => {
 
             <div className="WithdrawPGL">
                 <p className="lowertext">
-                Withdraw SFI
+                Withdraw PGL
                 </p>
                 <div className="linebreak">
                 </div>

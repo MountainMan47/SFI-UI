@@ -15,3 +15,7 @@ export const getStakingRewardsAddress = () => {
 export const getSfiAddress = () => {
     return getAddress(tokens.sfi.address);
 }
+
+export const getSfiAvaxPGLAddress = () => {
+    return getAddress(tokens.sfiAvax.address);
+}
