@@ -109,9 +109,9 @@ const Farm = () => {
         // Calc APR and TVL for single asset pool
 
         let rewardRateSFI = await stakeContract.rewardRate();
-        let totalStakedSFI = await tokenContract.balanceOf(stakeContract.address);
+        let totalStakedSFI = await stakeContract.totalSupply();
 
-        setApr((rewardRateSFI.toString() * 52) / (totalStakedSFI.toString() * 10**9));
+        setApr(((rewardRateSFI.toString() * 10**9) * 31536000 * 100) / (totalStakedSFI.toString() * 10**9));
 
         setSfiTVL(((await stakeContract.totalSupply()) / 10**9) * priceSFI);
 
@@ -165,8 +165,8 @@ const Farm = () => {
       alert(`You have earned: ${earned > 0 ? parseBalance(earned) : 0} SFI`);
     }
 
-    const handleWithdraw = async (amount) => {
-      await stakeContract.withdraw(new BigNumber(amount).times(RFI_TOKEN_DECIMAL).toString());
+    const handleWithdraw = async (amount, stake, decimal) => {
+      await stake.withdraw(new BigNumber(amount).times(decimal).toString());
     }
 
     const handleGetBalance = async () => {
@@ -193,12 +193,12 @@ const Farm = () => {
                 <li><a href="about.asp">Tokenomics</a></li>
             </ul>
             </div>
-            <div>
+            {/* <div>
             <img className="Icicles1" src={icicles} />
             <img className="Icicles2" src={icicles} />
             <img className="Icicles3" src={icicles} />
             <img className="Icicles4" src={icicles} />
-            </div>
+            </div> */}
         </div>
 
         <div className="banner">
@@ -208,10 +208,10 @@ const Farm = () => {
         <main className="Parent1">
             <p>Price SFI: {priceSFI ? `$${priceSFI}` : "Loading"}
             Burned SFI: {burnedSFI ? burnedSFI : "Loading"}
-            APR: {apr ? apr : "Loading"}</p>
+            </p>
             <div className="Stake1">
             <h1>Stake SFI</h1>
-            <p><b>TVL:</b>${sfiTVL}</p>
+            <p><b>TVL:</b>${sfiTVL} <b>APR:</b> {apr ? apr + '%' : "Loading"}</p>
             <div className="AvailabePGL">
 
                 <p className="lowertext">
@@ -247,31 +247,45 @@ const Farm = () => {
                     <center>
                         {stakedSFIBalance !== undefined ? stakedSFIBalance : "Loading"}
                         <br/><br/>
-                        <form
-                            onSubmit={(e) => {
-                            e.preventDefault();
-                            const target = e.target;
-                            const amount = target.amount.value;
-                            handleStake(amount, RFI_TOKEN_DECIMAL, tokenContract, stakeContract);
-                            }}>
-                        <input
-                            type="amount"
-                            name="amount" 
-                            placeholder="Amount to Stake"
-                            required
-                        />
-                        <button>Stake</button>
-                        </form>
                     </center>
                 </div>
             </div>
 
             <div className="WithdrawPGL">
                 <p className="lowertext">
-                Withdraw SFI
+                <form
+                    onSubmit={(e) => {
+                    e.preventDefault();
+                    const target = e.target;
+                    const amount = target.amount.value;
+                    handleStake(amount, RFI_TOKEN_DECIMAL, tokenContract, stakeContract);
+                    }}>
+                <input
+                    type="amount"
+                    name="amount" 
+                    placeholder="Amount to Stake"
+                    required
+                />
+                <button>Stake</button>
+                </form>
+                <form
+                    onSubmit={(e) => {
+                    e.preventDefault();
+                    const target = e.target;
+                    const amount = target.amount.value;
+                    handleWithdraw(amount, stakeContract, RFI_TOKEN_DECIMAL);
+                    }}>
+                <input
+                    type="amount"
+                    name="amount" 
+                    placeholder="Amount to Unstake"
+                    required
+                />
+                <button>Unstake SFI</button>
+                </form>
                 </p>
-                <div className="linebreak">
-                </div>
+                {/* <div className="linebreak">
+                </div> */}
 
             </div>
 
