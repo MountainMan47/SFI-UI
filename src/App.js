@@ -4,7 +4,7 @@ import { BigNumber } from "@ethersproject/bignumber";
 import { useEffect, useState } from "react";
 import Account from "./Components/Account";
 import Pool from "./Components/Pool";
-import Farm from './Components/Farm';
+import Farm from './Components/NewFarm';
 import ETHBalance from "./Components/ETHBalance";
 import useEagerConnect from "./hooks/useEagerConnect";
 import { createClient } from 'url';
@@ -31,15 +31,6 @@ export default function Home() {
         </nav>
       </header>
       <main>
-        {/* <h1>
-          SFI Staking Demo
-        </h1>
-        {isConnected && (
-          <section>
-            <ETHBalance />
-            <button onClick={handleSign}>Personal Sign</button>
-          </section>
-        )} */}
         <Farm />
       </main>
     </div>

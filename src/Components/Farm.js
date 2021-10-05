@@ -41,6 +41,7 @@ const Farm = () => {
     const [priceSFI, setPriceSFI] = useState();
     const [burnedSFI, setBurnedSFI] = useState();
     const [apr, setApr] = useState();
+    const [sfiAvaxApr, setSFIAvaxApr] = useState();
     const [sfiTVL, setSfiTVL] = useState();
     const [sfiAvaxTVL, setSfiAvaxTVL] = useState();
 
@@ -108,25 +109,44 @@ const Farm = () => {
 
         // Calc APR and TVL for single asset pool
 
-        let rewardRateSFI = await stakeContract.rewardRate();
-        let totalStakedSFI = await stakeContract.totalSupply();
+        const rewardRateSFI = await stakeContract.rewardRate();
+        const totalStakedSFI = await stakeContract.totalSupply();
+        const sfiTVL = ((await stakeContract.totalSupply()) / 10**9) * priceSFI;
+        const lSfiApr = ((rewardRateSFI.toString() * 10**9) * 31536000 * 100) / (totalStakedSFI.toString() * 10**9);
 
-        setApr(((rewardRateSFI.toString() * 10**9) * 31536000 * 100) / (totalStakedSFI.toString() * 10**9));
+        setApr(lSfiApr);
 
-        setSfiTVL(((await stakeContract.totalSupply()) / 10**9) * priceSFI);
+        setSfiTVL(sfiTVL);
 
         // Calc APR and TVL for SFI/AVAX pool
 
         const lockedSFI = parseSFIBalance((await sfiAvaxContract.getReserves())[0].toString());
         const sfiAvaxTotalSupply = (await sfiAvaxContract.totalSupply()).toString() / 10**18;
-        const sfiAvaxStaked = (await sfiAvaxContract.balanceOf(stakingRewardsPGLAddress)) * 10**18; // just using this to test while 100% of pgl is "staked"
+        const sfiAvaxStaked = (await sfiAvaxContract.balanceOf(stakingRewardsPGLAddress)) * 10**18;
+        const lSfiAvaxApr = ((rewardRateSFI.toString()) * 31536000 * 100) / ((sfiAvaxStaked/sfiAvaxTotalSupply) * (2 * lockedSFI));
+        console.log("lSfiAvaxApr:", lSfiAvaxApr);
 
-        // console.log(lockedSFI, sfiAvaxTotalSupply, await sfiAvaxBalance);
-        // console.log("TVL:", (sfiAvaxStaked / sfiAvaxTotalSupply) * lockedSFI * priceSFI);
 
         setSfiAvaxTVL((sfiAvaxStaked / sfiAvaxTotalSupply) * lockedSFI * priceSFI);
 
+        // const reserves = await sfiAvaxContract.getReserves();
+        // const sfiReserves = parseSFIBalance(reserves[0].toString());
+        const totalStakedSFIAvax = parseBalance(await stakePGLContract.totalSupply());
+
+        // setSfiAvaxTVL(sfiTVL / (sfiReserves / totalStakedSFIAvax));
+
+        const rewardRateSFIAvax = await stakePGLContract.rewardRate();
+        // console.log("rewardRateSFIAvax", rewardRateSFIAvax.toString())
+        // console.log("SFIAPR", ((rewardRateSFI.toString() * 10**9) * 31536000 * 100) / (totalStakedSFI.toString() * 10**9));
+
+        // setSFIAvaxApr(((rewardRateSFIAvax.toString() * 10**9) * 31536000 * 100) / (totalStakedSFIAvax.toString() * 10**18));
+        // console.log("sfi in pgl", (lockedSFI / totalStakedSFIAvax))
         
+
+        setSFIAvaxApr(lSfiAvaxApr);
+
+        // setSFIAvaxApr(lSfiApr / (lockedSFI / totalStakedSFIAvax));
+        // setSFIAvaxApr(((rewardRateSFI.toString() * 10**9) * 31536000 * 100) / (totalStakedSFI.toString() * 10**9) / (lockedSFI / totalStakedSFIAvax));
 
     }
 
@@ -294,7 +314,7 @@ const Farm = () => {
 
             <div className="Stake2">
             <h1>SFI-AVAX PGL</h1>
-            <p><b>TVL:</b>${sfiAvaxTVL}</p>
+            <p><b>TVL:</b>${sfiAvaxTVL ? sfiAvaxTVL : "Loading"} <b>APR:</b>{sfiAvaxApr ? sfiAvaxApr + "%" : "Loading"}</p>
             <div className="AvailabePGL">
 
 
@@ -305,7 +325,7 @@ const Farm = () => {
 
                 <div className="linebreak">
                     <br/>
-                    {sfiAvaxBalance}
+                    {sfiAvaxBalance ? sfiAvaxBalance : "Loading"}
                 </div>
                 <div className="enterbox">
                 </div>
@@ -361,98 +381,6 @@ const Farm = () => {
 
             </div>
         </main>
-
-
-        {/* <main className="Parent2">
-
-            <div className="Stake3">
-            <h1>Stake SL3 </h1>
-
-            <div className="AvailabePGL">
-
-
-
-                <p className="lowertext">
-                Available SFI
-                </p>
-
-                <div className="linebreak">
-                </div>
-                <div className="enterbox">
-                </div>
-            </div>
-
-            <div className="EarnedPGL">
-                <p className="lowertext">
-                Earned SFI
-                </p>
-                <div className="linebreak">
-                </div>
-            </div>
-            <div className="StakePGL">
-                <p className="lowertext">
-                Staked SFI
-                </p>
-                <div className="linebreak">
-                </div>
-            </div>
-
-            <div className="WithdrawPGL">
-                <p className="lowertext">
-                Withdraw SFI
-                </p>
-                <div className="linebreak">
-                </div>
-            </div>
-
-
-            </div>
-
-            <div className="Stake4">
-            <h1>SL3-AVAX PGL</h1>
-
-            <div className="AvailabePGL">
-
-
-
-                <p className="lowertext">
-                Available SFI
-                </p>
-
-                <div className="linebreak">
-                </div>
-                <div className="enterbox">
-                </div>
-            </div>
-
-            <div className="EarnedPGL">
-                <p className="lowertext">
-                Earned SFI
-                </p>
-                <div className="linebreak">
-                </div>
-            </div>
-            <div className="StakePGL">
-                <p className="lowertext">
-                Staked SFI
-                </p>
-                <div className="linebreak">
-                </div>
-            </div>
-
-            <div className="WithdrawPGL">
-                <p className="lowertext">
-                Withdraw SFI
-                </p>
-                <div className="linebreak">
-                </div>
-            </div>
-
-
-            </div>
-
-        </main> */}
-
         <div className="SocialBar">
             <ul className="NavButtons">
             <li><a href="https://t.me/sled_finance">Telegram</a></li>
