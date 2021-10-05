@@ -225,6 +225,7 @@ const Farm = () => {
         <div className="linebreakHome">
         </div>
         <div className="homebarbox">
+        <p>{priceSFI ? `$${priceSFI}` : "Loading"}</p>
         </div>
       </div>
       <div className="SFILiq">
@@ -252,6 +253,7 @@ const Farm = () => {
         <div className="linebreakHome">
         </div>
         <div className="homebarbox">
+            <p>{burnedSFI ? burnedSFI : "Loading"}</p>
         </div>
       </div>
     </div>
@@ -309,6 +311,7 @@ const Farm = () => {
             APR
           </p>
           <div className="APRprint">
+          <p>{apr ? apr + '%' : "Loading"}</p>
           </div>
           <div className="linebreak">
           </div>
@@ -316,6 +319,7 @@ const Farm = () => {
             Earned SFI
           </p>
           <div className="Earnprint">
+            <p>{earnedBalanceFromSFI !== undefined ? earnedBalanceFromSFI : "Loading"}</p>
           </div>
           <input className="bluebut2"type="submit" value="Claim" />
         </div>
@@ -326,6 +330,7 @@ const Farm = () => {
           TVL
           </p>
           <div className="TVLprint">
+              <p>${sfiTVL ? sfiTVL : "Loading"}</p>
           </div>
           <div className="linebreak">
           </div>
@@ -342,6 +347,7 @@ const Farm = () => {
             Available SFI:
           </p>
           <div className="availabletokens">
+              <p>{sfiBalance !== undefined ? sfiBalance : "Loading"}</p>
           </div>
           <div className="linebreak2">
           </div>
@@ -349,16 +355,36 @@ const Farm = () => {
             <p className="lowertext2">
               Stake:
             </p>
-    <form className="Stakeform" action="">
+    {/* <form className="Stakeform" action="">
 
         <input type="text" id="Stake SFI" name="Stake SFI" placeholder="Amount" />
 
         <input className="bluebut"type="submit" value="Submit" />
+        </form> */}
+
+        <form
+        className="Stakeform"
+        onSubmit={(e) => {
+        e.preventDefault();
+        const target = e.target;
+        const amount = target.amount.value;
+        handleStake(amount, RFI_TOKEN_DECIMAL, tokenContract, stakeContract);
+        }}>
+        <input
+            type="text"
+            id="Stake SFI"
+            name="amount" 
+            placeholder="Amount to Stake"
+            required
+        />
+        <button className="bluebut">Stake</button>
         </form>
+        
         <p className="lowertext4">
             Staked SFI:
         </p>
         <div className="stakedtokens">
+        {stakedSFIBalance !== undefined ? stakedSFIBalance : "Loading"}
         </div>
     </div>
         </div>
@@ -370,15 +396,24 @@ const Farm = () => {
             <p className="lowertext3">
               Withdraw:
             </p>
-      <form className="StakeformW" action="">
-
-      <input type="text" id="Stake SFI" name="Stake SFI" placeholder="Amount" />
-
-      <input className="bluebut" type="submit" value="Submit" />
-      </form>
+      <form
+        className="StakeformW"
+        onSubmit={(e) => {
+        e.preventDefault();
+        const target = e.target;
+        const amount = target.amount.value;
+        handleWithdraw(amount, stakeContract, RFI_TOKEN_DECIMAL);}}>
+    <input
+        type="text"
+        id="Stake SFI"
+        name="amount" 
+        placeholder="Amount to Unstake"
+        required
+    />
+    <button className="bluebut">Unstake</button>
+        </form>
       </div>
         </div>
-
       </div>
 
 
@@ -393,6 +428,7 @@ const Farm = () => {
             APR
           </p>
           <div className="APRprint">
+              <p>{sfiAvaxApr ? sfiAvaxApr + "%" : "Loading"}</p>
           </div>
           <div className="linebreak">
           </div>
@@ -400,6 +436,7 @@ const Farm = () => {
             Earned SFI
           </p>
           <div className="Earnprint">
+              <p>{earnedBalanceFromPGL !== undefined ? earnedBalanceFromPGL : "Loading"}</p>
           </div>
           <input className="bluebut2"type="submit" value="Claim" />
         </div>
@@ -410,6 +447,7 @@ const Farm = () => {
           TVL
           </p>
           <div className="TVLprint">
+              <p>${sfiAvaxTVL ? sfiAvaxTVL : "Loading"}</p>
           </div>
           <div className="linebreak">
           </div>
@@ -426,6 +464,7 @@ const Farm = () => {
             Available PGL:
           </p>
           <div className="availabletokens">
+              <p>{sfiAvaxBalance ? sfiAvaxBalance : "Loading"}</p>
           </div>
           <div className="linebreak2">
           </div>
@@ -433,17 +472,36 @@ const Farm = () => {
             <p className="lowertext2">
               Stake:
             </p>
-            <form className="Stakeform" action="">
+            {/* <form className="Stakeform" action="">
 
                 <input type="text" id="Stake SFI" name="Stake SFI" placeholder="Amount" />
 
                 <input className="bluebut"type="submit" value="Submit" />
+            </form> */}
+
+            <form
+                className="Stakeform"
+                onSubmit={(e) => {
+                e.preventDefault();
+                const target = e.target;
+                const amount = target.amount.value;
+                handleStake(amount, TOKEN_DECIMAL, sfiAvaxContract, stakePGLContract)}}>
+            <input
+                type="text"
+                id="Stake SFI"
+                name="amount" 
+                placeholder="Amount to Stake"
+                required
+            />
+            <button className="bluebut">Stake</button>
             </form>
+
             <p className="lowertext4">
                 Staked PGL:
             </p>
-            <div className="stakedtokens">
-            </div>
+                <div className="stakedtokens">
+                    <p>{stakedPGLBalance !== undefined ? stakedPGLBalance : "Loading"}</p>
+                </div>
             </div>
         </div>
 
