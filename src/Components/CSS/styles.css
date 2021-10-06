@@ -62,6 +62,30 @@ a{
   transform: translateY(-25%);
 
 }
+
+.centerT{
+  position: relative;
+  float: left;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-weight: 500;
+  font-size: 16px;
+}
+.centerH{
+  position: relative;
+  float: left;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 20px;
+  font-weight: 500;
+}
+
+ 
+  
+
+
 .lowertext{
   position: absolute;
   top: 5px;

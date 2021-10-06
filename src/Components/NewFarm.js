@@ -225,7 +225,7 @@ const Farm = () => {
         <div className="linebreakHome">
         </div>
         <div className="homebarbox">
-        <p>{priceSFI ? `$${priceSFI}` : "Loading"}</p>
+        <p className="centerT">{priceSFI ? `$${priceSFI.toFixed(5)}` : "Loading"}</p>
         </div>
       </div>
       <div className="SFILiq">
@@ -253,7 +253,7 @@ const Farm = () => {
         <div className="linebreakHome">
         </div>
         <div className="homebarbox">
-            <p>{burnedSFI ? burnedSFI : "Loading"}</p>
+        <p className="centerT">{burnedSFI ? burnedSFI : "Loading"}</p>
         </div>
       </div>
     </div>
@@ -311,7 +311,7 @@ const Farm = () => {
             APR
           </p>
           <div className="APRprint">
-          <p>{apr ? apr + '%' : "Loading"}</p>
+          <p className="centerT">{apr ? apr.toFixed(2) + '%' : "Loading"}</p>
           </div>
           <div className="linebreak">
           </div>
@@ -319,7 +319,7 @@ const Farm = () => {
             Earned SFI
           </p>
           <div className="Earnprint">
-            <p>{earnedBalanceFromSFI !== undefined ? earnedBalanceFromSFI : "Loading"}</p>
+          <p className="centerT">{earnedBalanceFromSFI !== undefined ? parseInt(earnedBalanceFromSFI).toFixed(2) : "Loading"}</p>
           </div>
           <input className="bluebut2"type="submit" value="Claim" />
         </div>
@@ -330,7 +330,7 @@ const Farm = () => {
           TVL
           </p>
           <div className="TVLprint">
-              <p>${sfiTVL ? sfiTVL : "Loading"}</p>
+            <p className="centerT">${sfiTVL ? sfiTVL.toFixed(2) : "Loading"}</p>
           </div>
           <div className="linebreak">
           </div>
@@ -347,7 +347,7 @@ const Farm = () => {
             Available SFI:
           </p>
           <div className="availabletokens">
-              <p>{sfiBalance !== undefined ? sfiBalance : "Loading"}</p>
+              <p className="centerT">{sfiBalance !== undefined ? parseInt(sfiBalance).toFixed() : "Loading"}</p>
           </div>
           <div className="linebreak2">
           </div>
@@ -384,7 +384,7 @@ const Farm = () => {
             Staked SFI:
         </p>
         <div className="stakedtokens">
-        {stakedSFIBalance !== undefined ? stakedSFIBalance : "Loading"}
+        <p className="centerT">{stakedSFIBalance !== undefined ? stakedSFIBalance : "Loading"}</p>
         </div>
     </div>
         </div>
@@ -428,7 +428,7 @@ const Farm = () => {
             APR
           </p>
           <div className="APRprint">
-              <p>{sfiAvaxApr ? sfiAvaxApr + "%" : "Loading"}</p>
+            <p className="centerT">{sfiAvaxApr ? sfiAvaxApr + "%" : "Loading"}</p>
           </div>
           <div className="linebreak">
           </div>
@@ -436,7 +436,7 @@ const Farm = () => {
             Earned SFI
           </p>
           <div className="Earnprint">
-              <p>{earnedBalanceFromPGL !== undefined ? earnedBalanceFromPGL : "Loading"}</p>
+            <p className="centerT">{earnedBalanceFromPGL !== undefined ? parseInt(earnedBalanceFromPGL).toFixed(2) : "Loading"}</p>
           </div>
           <input className="bluebut2"type="submit" value="Claim" />
         </div>
@@ -447,7 +447,7 @@ const Farm = () => {
           TVL
           </p>
           <div className="TVLprint">
-              <p>${sfiAvaxTVL ? sfiAvaxTVL : "Loading"}</p>
+            <p className="centerT">${sfiAvaxTVL ? sfiAvaxTVL.toFixed(2) : "Loading"}</p>
           </div>
           <div className="linebreak">
           </div>
@@ -464,7 +464,7 @@ const Farm = () => {
             Available PGL:
           </p>
           <div className="availabletokens">
-              <p>{sfiAvaxBalance ? sfiAvaxBalance : "Loading"}</p>
+            <p className="centerT">{sfiAvaxBalance ? sfiAvaxBalance.toFixed(6) : "Loading"}</p>
           </div>
           <div className="linebreak2">
           </div>
@@ -500,7 +500,7 @@ const Farm = () => {
                 Staked PGL:
             </p>
                 <div className="stakedtokens">
-                    <p>{stakedPGLBalance !== undefined ? stakedPGLBalance : "Loading"}</p>
+                    <p className="centerT">{stakedPGLBalance !== undefined ? stakedPGLBalance : "Loading"}</p>
                 </div>
             </div>
         </div>

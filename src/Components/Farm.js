@@ -241,7 +241,7 @@ const Farm = () => {
                 <div className="linebreak">
                     <br/>
                     <center>
-                        {sfiBalance !== undefined ? sfiBalance : "Loading"}
+                        <p className="centerT">{sfiBalance !== undefined ? sfiBalance : "Loading"}</p>
                     </center>
                 </div>
                 <div className="enterbox">
@@ -254,7 +254,7 @@ const Farm = () => {
                 <div className="linebreak">
                     <br/>
                     <center>
-                        {earnedBalanceFromSFI !== undefined ? earnedBalanceFromSFI : "Loading"}
+                    <p className="centerT">{earnedBalanceFromSFI !== undefined ? earnedBalanceFromSFI.toFixed(2) : "Loading"}</p>
                     </center>
                 </div>
             </div>
