@@ -9,7 +9,7 @@ import { RFI_TOKEN_DECIMAL, TOKEN_DECIMAL, parseBalance, parseSFIBalance } from 
 import { getStakingRewardsAddress, getStakingRewardsPGLAddress, getSfiAddress, getSfiAvaxPGLAddress } from '../utils/addressHelpers.js';
 import background from './CSS/ICE-background.png';
 import icicles from "./CSS/Icicles.png";
-import banner from "./CSS/IceBanner.png";
+import banner from './CSS/Artboard 1.png';
 import '../Components/CSS/styles.css';
 import useBlockNumber from "../hooks/useBlockNumber";
 // import { AbiItem } from "web3-utils";

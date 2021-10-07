@@ -63,6 +63,35 @@ a{
 
 }
 
+.metabut {
+  width: 80px;
+  height: 50px;
+  font: bold 14px Arial;
+  font-weight: 800;
+  text-decoration: none;
+  text-align: center;
+  background-color: #EEEEEE;  
+  color: #0d0d0e;
+  padding: 0px;
+
+
+
+  position: absolute;
+  top: 50%;
+  right: 95px;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+
+
+.metabut:hover {
+  background-color:  #00ff99;}
+
 .centerT{
   position: relative;
   float: left;
@@ -297,6 +326,13 @@ transform: translateY(-50%);
 
   .bluebut2:hover {
     background-color:  #00ff99;}
+
+
+
+
+
+
+    
 
 .FarmsScreen {
   position: absolute;
@@ -689,11 +725,11 @@ top: 60%;
 
 .banner {
   height: 350px;
-  width: 1000px;
+  width: 900px;
   position: absolute;
   left: 50%;
   top: 75px;
-  margin-left: -500px;
+  margin-left: -450px;
   border-radius: .5rem;
 }
 
@@ -727,7 +763,7 @@ top: 60%;
 }
 
 .NavICE {
-  height: 120px;
+  height: 100px;
   Width: 100%;
   position: absolute;
   background-color: #83cdef;
@@ -751,7 +787,7 @@ top: 60%;
     Width: 100%;
     position: absolute;
     background-color: transparent;
-    bottom: 0px;
+    top: 2200px;
     border-left: none;
     border-right: none;
   }
