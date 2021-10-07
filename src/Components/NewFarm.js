@@ -39,6 +39,7 @@ const Farm = () => {
     const [stakedPGLBalance, setStakedPGLBalance] = useState();
     const [sfiAvaxBalance, setSfiAvaxBalance] = useState();
     const [priceSFI, setPriceSFI] = useState();
+    const [priceAvax, setPriceAvax] = useState();
     const [burnedSFI, setBurnedSFI] = useState();
     const [apr, setApr] = useState();
     const [sfiAvaxApr, setSFIAvaxApr] = useState();
@@ -76,6 +77,7 @@ const Farm = () => {
         .then(res => ethPrice = res.bundle.ethPrice);
 
         setPriceSFI(rawPriceSFI * ethPrice);
+        setPriceAvax(ethPrice);
 
         // console.log("Price:", rawPriceSFI * ethPrice, "SFI:", priceSFI, "AVAX:", ethPrice, "Blocknumber:", blockNumber);
 
@@ -119,15 +121,24 @@ const Farm = () => {
         setSfiTVL(sfiTVL);
 
         // Calc APR and TVL for SFI/AVAX pool
+        const reserves = await sfiAvaxContract.getReserves();
 
-        const lockedSFI = parseSFIBalance((await sfiAvaxContract.getReserves())[0].toString());
+        // const lockedSFI = (await sfiAvaxContract.getReserves())[0].toString();
+        const lockedSFI = reserves[0].toString();
+        const lockedAvax = reserves[1].toString();
+
         const sfiAvaxTotalSupply = (await sfiAvaxContract.totalSupply()).toString() / 10**18;
         const sfiAvaxStaked = (await sfiAvaxContract.balanceOf(stakingRewardsPGLAddress)) * 10**18;
-        const lSfiAvaxApr = ((rewardRateSFI.toString()) * 31536000 * 100) / ((sfiAvaxStaked/sfiAvaxTotalSupply) * (2 * lockedSFI));
+        // const lSfiAvaxApr = ((rewardRateSFI.toString()) * 31536000 * 100) / ((sfiAvaxStaked/sfiAvaxTotalSupply) * (2 * lockedSFI));
+        const lSfiAvaxApr = ((rewardRateSFI.toString() * 31536000*100)/(2 * lockedSFI));
+        console.log("lockedSFI:", lockedSFI);
         console.log("lSfiAvaxApr:", lSfiAvaxApr);
 
 
-        setSfiAvaxTVL((sfiAvaxStaked / sfiAvaxTotalSupply) * lockedSFI * priceSFI);
+        // setSfiAvaxTVL((sfiAvaxStaked / sfiAvaxTotalSupply) * parseSFIBalance(lockedSFI) * priceSFI);
+        setSfiAvaxTVL((parseSFIBalance(lockedSFI) * priceSFI) + (parseBalance(lockedAvax) * priceAvax))
+        console.log("PGL TVL:", sfiAvaxTVL)
+        console.log("Price AVAX:", priceAvax)
 
         // const reserves = await sfiAvaxContract.getReserves();
         // const sfiReserves = parseSFIBalance(reserves[0].toString());
@@ -428,7 +439,7 @@ const Farm = () => {
             APR
           </p>
           <div className="APRprint">
-            <p className="centerT">{sfiAvaxApr ? sfiAvaxApr + "%" : "Loading"}</p>
+            <p className="centerT">{sfiAvaxApr ? sfiAvaxApr.toFixed(2) + "%" : "Loading"}</p>
           </div>
           <div className="linebreak">
           </div>
