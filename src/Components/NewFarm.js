@@ -123,42 +123,24 @@ const Farm = () => {
         // Calc APR and TVL for SFI/AVAX pool
         const reserves = await sfiAvaxContract.getReserves();
 
-        // const lockedSFI = (await sfiAvaxContract.getReserves())[0].toString();
         const lockedSFI = reserves[0].toString();
         const lockedAvax = reserves[1].toString();
 
         const sfiAvaxTotalSupply = (await sfiAvaxContract.totalSupply()).toString() / 10**18;
         const sfiAvaxStaked = (await sfiAvaxContract.balanceOf(stakingRewardsPGLAddress)) * 10**18;
-        // const lSfiAvaxApr = ((rewardRateSFI.toString()) * 31536000 * 100) / ((sfiAvaxStaked/sfiAvaxTotalSupply) * (2 * lockedSFI));
         const lSfiAvaxApr = ((rewardRateSFI.toString() * 31536000*100)/(2 * lockedSFI));
         console.log("lockedSFI:", lockedSFI);
         console.log("lSfiAvaxApr:", lSfiAvaxApr);
 
-
-        // setSfiAvaxTVL((sfiAvaxStaked / sfiAvaxTotalSupply) * parseSFIBalance(lockedSFI) * priceSFI);
         setSfiAvaxTVL((parseSFIBalance(lockedSFI) * priceSFI) + (parseBalance(lockedAvax) * priceAvax))
         console.log("PGL TVL:", sfiAvaxTVL)
         console.log("Price AVAX:", priceAvax)
 
-        // const reserves = await sfiAvaxContract.getReserves();
-        // const sfiReserves = parseSFIBalance(reserves[0].toString());
         const totalStakedSFIAvax = parseBalance(await stakePGLContract.totalSupply());
 
-        // setSfiAvaxTVL(sfiTVL / (sfiReserves / totalStakedSFIAvax));
-
         const rewardRateSFIAvax = await stakePGLContract.rewardRate();
-        // console.log("rewardRateSFIAvax", rewardRateSFIAvax.toString())
-        // console.log("SFIAPR", ((rewardRateSFI.toString() * 10**9) * 31536000 * 100) / (totalStakedSFI.toString() * 10**9));
-
-        // setSFIAvaxApr(((rewardRateSFIAvax.toString() * 10**9) * 31536000 * 100) / (totalStakedSFIAvax.toString() * 10**18));
-        // console.log("sfi in pgl", (lockedSFI / totalStakedSFIAvax))
-        
 
         setSFIAvaxApr(lSfiAvaxApr);
-
-        // setSFIAvaxApr(lSfiApr / (lockedSFI / totalStakedSFIAvax));
-        // setSFIAvaxApr(((rewardRateSFI.toString() * 10**9) * 31536000 * 100) / (totalStakedSFI.toString() * 10**9) / (lockedSFI / totalStakedSFIAvax));
-
     }
 
     if(tokenContract && stakeContract){
@@ -175,17 +157,6 @@ const Farm = () => {
         console.log(`Staked ${amount} SFI`);
 
     }
-
-    // const handleStake = async (amount, decimal, token, stake) => {
-
-    //     const formattedAmount = new BigNumber(amount).times(RFI_TOKEN_DECIMAL).toString();
-    //     const approvalTxn = await tokenContract.approve(stakeContract.address, formattedAmount);
-    //     console.log(`Approving ${amount} SFI`);
-    //     await approvalTxn.wait();
-    //     await stakeContract.stake(formattedAmount);
-    //     console.log(`Staked ${amount} SFI`);
-
-    // }
 
     const handleGetReward = async () => {
         await stakeContract.getReward();
