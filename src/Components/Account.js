@@ -16,6 +16,8 @@ const Account = ({ triedToEagerConnect }) => {
     setError,
   } = useWeb3React();
 
+  console.log("Hi from account", triedToEagerConnect)
+
   // initialize metamask onboarding
   const onboarding = useRef();
 
@@ -42,6 +44,7 @@ const Account = ({ triedToEagerConnect }) => {
     <div>
     {hasMetaMaskOrWeb3Available ? (
       <button
+        className="metabut"
         onClick={() => {
           setConnecting(true);
 
@@ -56,8 +59,8 @@ const Account = ({ triedToEagerConnect }) => {
         }}
       >
         {MetaMaskOnboarding.isMetaMaskInstalled()
-          ? "Connect to MetaMask"
-          : "Connect to Wallet"}
+          ? "Connect"
+          : "Connect"}
       </button>
     ) : (
       <button onClick={() => onboarding.current?.startOnboarding()}>
@@ -93,15 +96,16 @@ const Account = ({ triedToEagerConnect }) => {
   }
 
   return (
-    <a
-      {...{
-        href: formatEtherscanLink("Account", [chainId, account]),
-        target: "_blank",
-        rel: "noopener noreferrer",
-      }}
-    >
-      {ENSName || `${shortenHex(account, 4)}`}
-    </a>
+    // <a
+    //   {...{
+    //     href: formatEtherscanLink("Account", [chainId, account]),
+    //     target: "_blank",
+    //     rel: "noopener noreferrer",
+    //   }}
+    // >
+    //   {ENSName || `${shortenHex(account, 4)}`}
+    // </a>
+    <button className="metabut">{`${shortenHex(account, 4)}`}</button>
   );
 };
 

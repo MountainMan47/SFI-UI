@@ -26,9 +26,9 @@ export default function Home() {
         />
         <link rel="stylesheet" href="./Components/CSS/styles.css" />
       <header>
-        <nav>
+        {/* <nav>
           <Account triedToEagerConnect={triedToEagerConnect} />
-        </nav>
+        </nav> */}
       </header>
       <main>
         <Farm />

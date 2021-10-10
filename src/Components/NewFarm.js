@@ -1,3 +1,4 @@
+import '../Components/CSS/styles.css';
 import { useState, useEffect, useCallback } from 'react';
 import { useWeb3React } from "@web3-react/core";
 import { ethers } from 'ethers';
@@ -10,8 +11,9 @@ import { getStakingRewardsAddress, getStakingRewardsPGLAddress, getSfiAddress, g
 import background from './CSS/ICE-background.png';
 import icicles from "./CSS/Icicles.png";
 import banner from './CSS/Artboard 1.png';
-import '../Components/CSS/styles.css';
 import useBlockNumber from "../hooks/useBlockNumber";
+import useEagerConnect from '../hooks/useEagerConnect';
+import Account from '../Components/Account';
 // import { AbiItem } from "web3-utils";
 
 // Abis
@@ -52,6 +54,7 @@ const Farm = () => {
     const fetchSfiAvaxContract = useContract(sfiAvaxAddress, pglABI, true);
 
     const blockNumber = useBlockNumber().data;
+    const triedToEagerConnect = useEagerConnect();
 
     
     useEffect(async () => {
@@ -193,8 +196,8 @@ const Farm = () => {
           <li><a href="https://iceagefinance.medium.com/"target="_blank">Medium</a></li>
         
         </ul>
-        <button className="metabut">Connect</button>
       </div>
+      <Account triedToEagerConnect={triedToEagerConnect} />
     <div className="banner">
       
      
