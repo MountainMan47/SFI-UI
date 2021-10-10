@@ -158,8 +158,8 @@ const Farm = () => {
 
     }
 
-    const handleGetReward = async () => {
-        await stakeContract.getReward();
+    const handleGetReward = async (contract) => {
+        await contract.getReward();
     }
 
     const handleEarned = async () => {
@@ -305,7 +305,7 @@ const Farm = () => {
           <div className="Earnprint">
           <p className="centerT">{earnedBalanceFromSFI !== undefined ? parseInt(earnedBalanceFromSFI).toFixed(2) : "Loading"}</p>
           </div>
-          <input className="bluebut2"type="submit" value="Claim" />
+          <input className="bluebut2" type="submit" onClick={() => handleGetReward(stakeContract)} value="Claim" />
         </div>
         <div className="TVLs">
           <p className="lowertextTVL">
@@ -422,7 +422,7 @@ const Farm = () => {
           <div className="Earnprint">
             <p className="centerT">{earnedBalanceFromPGL !== undefined ? parseInt(earnedBalanceFromPGL).toFixed(2) : "Loading"}</p>
           </div>
-          <input className="bluebut2"type="submit" value="Claim" />
+          <input className="bluebut2" type="submit" onClick={() => handleGetReward(stakePGLContract)} value="Claim" />
         </div>
         <div className="TVLs">
           <p className="lowertextTVL">
