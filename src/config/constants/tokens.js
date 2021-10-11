@@ -13,6 +13,20 @@ const tokens = {
             43113: "0x096Fb607aBac2f6401D635A03C0cc3dF265BfF19",
             43114: "0x0Eventually",
         }
+    },
+    sl3: {
+        symbol: "SL3",
+        address: {
+            43113: "0xa2135172754b5C16bD1C1842bd7fd5c555b017dc",
+            43114: "0x0Eventually",
+        }
+    },
+    sl3Avax: {
+        symbol: "PGL",
+        address: {
+            43113: "0x096Fb607aBac2f6401D635A03C0cc3dF265BfF19",
+            43114: "0x0Eventually",
+        }
     }
 }
 

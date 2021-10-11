@@ -7,9 +7,8 @@ import BigNumber from 'bignumber.js';
 import * as QUERIES from '../utils/queries'
 import * as gql from '../utils/gql'
 import { RFI_TOKEN_DECIMAL, TOKEN_DECIMAL, parseBalance, parseSFIBalance } from '../util';
-import { getStakingRewardsAddress, getStakingRewardsPGLAddress, getSfiAddress, getSfiAvaxPGLAddress } from '../utils/addressHelpers.js';
+import { getStakingRewardsAddress, getStakingRewardsPGLAddress, getStakingRewardsSL3Address, getStakingRewardsSL3PGLAddress, getSfiAddress, getSfiAvaxPGLAddress, getSL3Address, getSL3AvaxAddress } from '../utils/addressHelpers.js';
 import background from './CSS/ICE-background.png';
-import icicles from "./CSS/Icicles.png";
 import banner from './CSS/Artboard 1.png';
 import useBlockNumber from "../hooks/useBlockNumber";
 import useEagerConnect from '../hooks/useEagerConnect';
@@ -19,39 +18,64 @@ import Account from '../Components/Account';
 // Abis
 import stakingrewardsABI from "../config/abi/stakingrewards.json";
 import sfiABI from "../config/abi/sfi.json";
+import sl3ABI from "../config/abi/sl3.json"
 import pglABI from "../config/abi/pgl.json";
 import contracts from '../config/constants/contracts';
 
 // Addresses
 const stakingRewardsAddress = getStakingRewardsAddress();
 const stakingRewardsPGLAddress = getStakingRewardsPGLAddress();
+const stakingRewardsSL3Address = getStakingRewardsSL3Address();
+const stakingRewardsSL3AvaxAddress = getStakingRewardsSL3PGLAddress()
 const sfiAddress = getSfiAddress();
 const sfiAvaxAddress = getSfiAvaxPGLAddress();
+const sl3Address = getSL3Address();
+const sl3AvaxAddress = getSL3AvaxAddress();
 
 const Farm = () => {
     const { account } = useWeb3React();
     const [stakeContract, setStakeContract] = useState();
+    const [stakeSL3Contract, setStakeSL3Contract] = useState();
     const [stakePGLContract, setStakePGLContract] = useState();
+    const [stakeSL3PGLContract, setStakeSL3PGLContract] = useState();
     const [tokenContract, setTokenContract] = useState();
+    const [sl3Contract, setSL3Contract] = useState();
     const [sfiAvaxContract, setSfiAvaxContract] = useState();
+    const [sl3AvaxContract, setSL3AvaxContract] = useState();
     const [sfiBalance, setSFIBalance] = useState();
+    const [sl3Balance, setSL3Balance] = useState();
     const [earnedBalanceFromSFI, setEarnedBalanceFromSFI] = useState();
+    const [earnedBalanceFromSL3, setEarnedBalanceFromSL3] = useState();
     const [earnedBalanceFromPGL, setEarnedBalanceFromPGL] = useState();
+    const [earnedBalanceFromSL3PGL, setEarnedBalanceFromSL3PGL] = useState();
     const [stakedSFIBalance, setStakedSFIBalance] = useState();
+    const [stakeSL3Balance, setStakedSL3Balance] = useState();
     const [stakedPGLBalance, setStakedPGLBalance] = useState();
+    const [stakedSL3PGLBalance, setStakedSL3PGLBalance] = useState();
     const [sfiAvaxBalance, setSfiAvaxBalance] = useState();
+    const [sl3AvaxBalance, setSL3AvaxBalance] = useState();
     const [priceSFI, setPriceSFI] = useState();
+    const [priceSL3, setPriceSL3] = useState();
     const [priceAvax, setPriceAvax] = useState();
     const [burnedSFI, setBurnedSFI] = useState();
+    const [burnedSL3, setBurnedSL3] = useState();
     const [apr, setApr] = useState();
+    const [sl3Apr, setSL3Apr] = useState();
     const [sfiAvaxApr, setSFIAvaxApr] = useState();
+    const [sl3AvaxApr, setSL3AvaxApr] = useState();
     const [sfiTVL, setSfiTVL] = useState();
+    const [sl3TVL, setSL3TVL] = useState();
     const [sfiAvaxTVL, setSfiAvaxTVL] = useState();
+    const [sl3AvaxTVL, setSL3AvaxTVL] = useState();
 
     const fetchStakeContract = useContract(stakingRewardsAddress, stakingrewardsABI, true);
+    const fetchStakeSL3Contract = useContract(stakingRewardsSL3Address, stakingrewardsABI, true);
     const fetchStakePGLContract = useContract(stakingRewardsPGLAddress, stakingrewardsABI, true);
+    const fetchStakeSL3PGLContract = useContract(stakingRewardsSL3AvaxAddress, stakingrewardsABI, true);
     const fetchTokenContract = useContract(sfiAddress, sfiABI, true);
+    const fetchSL3Contract = useContract(sl3Address, sl3ABI, true);
     const fetchSfiAvaxContract = useContract(sfiAvaxAddress, pglABI, true);
+    const fetchSl3AvaxContract = useContract(sl3AvaxAddress, pglABI, true);
 
     const blockNumber = useBlockNumber().data;
     const triedToEagerConnect = useEagerConnect();
@@ -59,19 +83,37 @@ const Farm = () => {
     
     useEffect(async () => {
         setSfiAvaxContract(await fetchSfiAvaxContract);
+        setSL3AvaxContract(await fetchSl3AvaxContract);
         setStakeContract(await fetchStakeContract);
+        setStakeSL3Contract(await fetchStakeSL3Contract);
         setStakePGLContract(await fetchStakePGLContract);
+        setStakeSL3PGLContract(await fetchStakeSL3PGLContract);
         setTokenContract(await fetchTokenContract);
-    }, [fetchStakeContract, fetchTokenContract, fetchSfiAvaxContract, fetchStakePGLContract]);
+        setSL3Contract(await fetchSL3Contract);
+    }, [
+      fetchStakeContract, 
+      fetchTokenContract, 
+      fetchSfiAvaxContract, 
+      fetchStakePGLContract, 
+      fetchSl3AvaxContract, 
+      fetchStakeSL3Contract, 
+      fetchStakeSL3PGLContract, 
+      fetchSL3Contract]);
 
     const graphetch = async () => {
         let rawPriceSFI;
+        let rawPriceSL3;
         let ethPrice;
 
         await gql.request(QUERIES.TOKEN,{
         id: "0x1f1fe1ef06ab30a791d6357fdf0a7361b39b1537"
         })
         .then(res => rawPriceSFI = res.token.derivedETH);
+
+        await gql.request(QUERIES.TOKEN,{
+          id: "0x2841a8a2ce98a9d21ad8c3b7fc481527569bd7bb"
+          })
+          .then(res => rawPriceSL3 = res.token.derivedETH);
 
         await gql.request(QUERIES.AVAXPRICE,{
         id: 1,
@@ -80,6 +122,7 @@ const Farm = () => {
         .then(res => ethPrice = res.bundle.ethPrice);
 
         setPriceSFI(rawPriceSFI * ethPrice);
+        setPriceSL3(rawPriceSL3 * ethPrice);
         setPriceAvax(ethPrice);
 
         // console.log("Price:", rawPriceSFI * ethPrice, "SFI:", priceSFI, "AVAX:", ethPrice, "Blocknumber:", blockNumber);
@@ -91,16 +134,25 @@ const Farm = () => {
     }
 
     const setBals = async () => {
-
         if(!sfiBalance && !earnedBalanceFromSFI && !sfiAvaxBalance){
             setSFIBalance(parseSFIBalance(await tokenContract.balanceOf(account)));
             setEarnedBalanceFromSFI(parseSFIBalance(await stakeContract.earned(account)));
             setEarnedBalanceFromPGL(parseSFIBalance(await stakePGLContract.earned(account)))
             setSfiAvaxBalance((await sfiAvaxContract.balanceOf(account) / 10**18));
         }
-    
+
         setStakedSFIBalance(parseSFIBalance(await stakeContract.balanceOf(account)));
         setStakedPGLBalance(parseBalance(await stakePGLContract.balanceOf(account)));
+
+        if(!sl3Balance && !earnedBalanceFromSL3 && !sl3AvaxBalance){
+          setSL3Balance(parseSFIBalance(await sl3Contract.balanceOf(account)));
+          setEarnedBalanceFromSL3(parseSFIBalance(await stakeSL3Contract.earned(account)));
+          setEarnedBalanceFromSL3PGL(parseSFIBalance(await stakeSL3PGLContract.earned(account)))
+          setSL3AvaxBalance((await sl3AvaxContract.balanceOf(account) / 10**18));
+      }
+    
+        setStakedSL3Balance(parseSFIBalance(await stakeSL3Contract.balanceOf(account)));
+        setStakedSL3PGLBalance(parseBalance(await stakeSL3PGLContract.balanceOf(account)));
     
         // Pretty sure this should be replaced with Vitalik's address to calc burn on mainnet... ?
         await tokenContract.balanceOf("0xCCA162Fe23AB614174bC99A9e9019d211133a8d1")
@@ -109,6 +161,15 @@ const Farm = () => {
             .then((decimals) => {
                 let burned = balance.div(10**decimals);
                 setBurnedSFI(burned.toString());
+            })
+        );
+
+        await sl3Contract.balanceOf("0xCCA162Fe23AB614174bC99A9e9019d211133a8d1")
+        .then(balance =>
+            tokenContract.decimals()
+            .then((decimals) => {
+                let burned = balance.div(10**decimals);
+                setBurnedSL3(burned.toString());
             })
         );
 
@@ -132,15 +193,10 @@ const Farm = () => {
         const sfiAvaxTotalSupply = (await sfiAvaxContract.totalSupply()).toString() / 10**18;
         const sfiAvaxStaked = (await sfiAvaxContract.balanceOf(stakingRewardsPGLAddress)) * 10**18;
         const lSfiAvaxApr = ((rewardRateSFI.toString() * 31536000*100)/(2 * lockedSFI));
-        console.log("lockedSFI:", lockedSFI);
-        console.log("lSfiAvaxApr:", lSfiAvaxApr);
 
         setSfiAvaxTVL((parseSFIBalance(lockedSFI) * priceSFI) + (parseBalance(lockedAvax) * priceAvax))
-        console.log("PGL TVL:", sfiAvaxTVL)
-        console.log("Price AVAX:", priceAvax)
 
         const totalStakedSFIAvax = parseBalance(await stakePGLContract.totalSupply());
-
         const rewardRateSFIAvax = await stakePGLContract.rewardRate();
 
         setSFIAvaxApr(lSfiAvaxApr);
@@ -171,6 +227,7 @@ const Farm = () => {
     }
 
     const handleWithdraw = async (amount, stake, decimal) => {
+      console.log(stake)
       await stake.withdraw(new BigNumber(amount).times(decimal).toString());
     }
 
@@ -244,7 +301,7 @@ const Farm = () => {
         </div>
       </div>
     </div>
-    {/* <div className="HomeSL3">
+    <div className="HomeSL3">
       <div className="SFIprice">
         <p>
           SL3 Price
@@ -252,6 +309,7 @@ const Farm = () => {
         <div className="linebreakHome">
         </div>
         <div className="homebarbox">
+        <p className="centerT">{priceSL3 ? `$${priceSL3.toFixed(5)}` : "Loading"}</p>
         </div>
       </div>
       <div className="SFILiq">
@@ -280,12 +338,10 @@ const Farm = () => {
         <div className="linebreakHome">
         </div>
         <div className="homebarbox">
+        <p className="centerT">{burnedSL3 ? burnedSL3 : "Loading"}</p>
         </div>
       </div>
-    </div> */}
-
-
-
+    </div>
     <main className="Parent1">
       <div className="Stake1">
         <h1>Stake SFI</h1>
@@ -505,7 +561,7 @@ const Farm = () => {
         </div>
         </div>
     </main>
-    {/* <main className="Parent2">
+    <main className="Parent2">
       <div className="Stake3">
         <h1>Stake SL3</h1>
         <div className="APR-Earned">
@@ -546,6 +602,7 @@ const Farm = () => {
             Available SL3:
           </p>
           <div className="availabletokens">
+          <p className="centerT">{sl3Balance !== undefined ? parseInt(sl3Balance).toFixed() : "Loading"}</p>
           </div>
           <div className="linebreak2">
           </div>
@@ -630,6 +687,7 @@ const Farm = () => {
             Available PGL:
           </p>
           <div className="availabletokens">
+          <p className="centerT">{sl3AvaxBalance ? sl3AvaxBalance.toFixed(6) : "Loading"}</p>
           </div>
           <div className="linebreak2">
           </div>
@@ -670,7 +728,7 @@ const Farm = () => {
 
       </div>
 
-    </main> */}
+    </main>
 
     <div className="SocialBar">
       <ul className="NavButtons">

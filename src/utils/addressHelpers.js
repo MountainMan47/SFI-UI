@@ -16,10 +16,26 @@ export const getStakingRewardsPGLAddress = () => {
     return getAddress(addresses.stakingRewardPGL);
 }
 
+export const getStakingRewardsSL3Address = () => {
+    return getAddress(addresses.stakingRewardSL3)
+}
+
+export const getStakingRewardsSL3PGLAddress = () => {
+    return getAddress(addresses.stakingRewardSL3PGL)
+}
+
 export const getSfiAddress = () => {
     return getAddress(tokens.sfi.address);
 }
 
 export const getSfiAvaxPGLAddress = () => {
     return getAddress(tokens.sfiAvax.address);
+}
+
+export const getSL3Address = () => {
+    return getAddress(tokens.sl3.address);
+}
+
+export const getSL3AvaxAddress = () => {
+    return getAddress(tokens.sl3Avax.address);
 }

@@ -15,9 +15,7 @@ const Account = ({ triedToEagerConnect }) => {
     account,
     setError,
   } = useWeb3React();
-
-  console.log("Hi from account", triedToEagerConnect)
-
+  
   // initialize metamask onboarding
   const onboarding = useRef();
 
