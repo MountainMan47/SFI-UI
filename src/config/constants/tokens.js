@@ -24,7 +24,7 @@ const tokens = {
     sl3Avax: {
         symbol: "PGL",
         address: {
-            43113: "0x096Fb607aBac2f6401D635A03C0cc3dF265BfF19",
+            43113: "0xD945F2f59bEa51b86CF60C846242Bfa16b65db8b",
             43114: "0x0Eventually",
         }
     }
