@@ -65,6 +65,8 @@ const Farm = () => {
     const [sl3AvaxApr, setSL3AvaxApr] = useState();
     const [sfiTVL, setSfiTVL] = useState();
     const [sl3TVL, setSL3TVL] = useState();
+    const [sfiMC, setSFIMC] = useState();
+    const [sl3MC, setSL3MC] = useState();
     const [sfiAvaxTVL, setSfiAvaxTVL] = useState();
     const [sl3AvaxTVL, setSL3AvaxTVL] = useState();
 
@@ -155,7 +157,6 @@ const Farm = () => {
         setEarnedBalanceFromSL3(parseSFIBalance(await stakeSL3Contract.earned(account)));
         setEarnedBalanceFromSL3PGL(parseSFIBalance(await stakeSL3PGLContract.earned(account)))
         setSL3AvaxBalance((await sl3AvaxContract.balanceOf(account) / 10**18));
-        console.log("SL3AvaxBal:", (await sl3AvaxContract.balanceOf(account) / 10**18))
       }
     
       setStakedSL3Balance(parseSFIBalance(await stakeSL3Contract.balanceOf(account)));
@@ -182,18 +183,21 @@ const Farm = () => {
 
       // Calc APR and TVL for SFI single asset pool
 
-      const getAPRandTVLforRFI = async (contract, price, addAprToState, addTvlToState) => {
+      const getAPRandTVLforRFI = async (contract, tokenContract, price, burnedToken, addAprToState, addTvlToState, addMCToState) => {
         const rewardRateSFI = await contract.rewardRate();
         const totalStakedSFI = await contract.totalSupply();
         const sfiTVL = ((await contract.totalSupply()) / 10**9) * price;
         const lSfiApr = ((rewardRateSFI.toString() * 10**9) * 31536000 * 100) / (totalStakedSFI.toString() * 10**9);
+        const marketCap = (((await tokenContract.totalSupply()).toString() / 10**9) - burnedToken) * price;
 
         addAprToState(lSfiApr);
         addTvlToState(sfiTVL);
+        addMCToState(marketCap);
       }
 
-      getAPRandTVLforRFI(stakeContract, priceSFI, setApr, setSfiTVL);
-      getAPRandTVLforRFI(stakeSL3Contract, priceSL3, setSL3Apr, setSL3TVL);
+      // Set SFI and SL3 stats
+      getAPRandTVLforRFI(stakeContract, tokenContract, priceSFI, burnedSFI, setApr, setSfiTVL, setSFIMC);
+      getAPRandTVLforRFI(stakeSL3Contract, sl3Contract, priceSL3, burnedSL3, setSL3Apr, setSL3TVL, setSL3MC);
 
       // Calc APR and TVL for PGL pools
 
@@ -347,6 +351,7 @@ const Farm = () => {
         <div className="linebreakHome">
         </div>
         <div className="homebarbox">
+        <p className="centerT">{sfiMC ? `$${sfiMC.toFixed(2)}` : "Loading"}</p>
         </div>
       </div>
       <div className="SFIBurned">
@@ -387,6 +392,7 @@ const Farm = () => {
         <div className="linebreakHome">
         </div>
         <div className="homebarbox">
+          <p className="centerT">{sl3MC ? `$${sl3MC.toFixed(2)}` : "Loading"}</p>
         </div>
       </div>
 
