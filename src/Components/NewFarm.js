@@ -49,7 +49,7 @@ const Farm = () => {
     const [earnedBalanceFromPGL, setEarnedBalanceFromPGL] = useState();
     const [earnedBalanceFromSL3PGL, setEarnedBalanceFromSL3PGL] = useState();
     const [stakedSFIBalance, setStakedSFIBalance] = useState();
-    const [stakeSL3Balance, setStakedSL3Balance] = useState();
+    const [stakedSL3Balance, setStakedSL3Balance] = useState();
     const [stakedPGLBalance, setStakedPGLBalance] = useState();
     const [stakedSL3PGLBalance, setStakedSL3PGLBalance] = useState();
     const [sfiAvaxBalance, setSfiAvaxBalance] = useState();
@@ -134,75 +134,84 @@ const Farm = () => {
     }
 
     const setBals = async () => {
-        if(!sfiBalance && !earnedBalanceFromSFI && !sfiAvaxBalance){
-            setSFIBalance(parseSFIBalance(await tokenContract.balanceOf(account)));
-            setEarnedBalanceFromSFI(parseSFIBalance(await stakeContract.earned(account)));
-            setEarnedBalanceFromPGL(parseSFIBalance(await stakePGLContract.earned(account)))
-            setSfiAvaxBalance((await sfiAvaxContract.balanceOf(account) / 10**18));
-        }
+      if(!sfiBalance && !earnedBalanceFromSFI && !sfiAvaxBalance){
+          setSFIBalance(parseSFIBalance(await tokenContract.balanceOf(account)));
+          setEarnedBalanceFromSFI(parseSFIBalance(await stakeContract.earned(account)));
+          setEarnedBalanceFromPGL(parseSFIBalance(await stakePGLContract.earned(account)))
+          setSfiAvaxBalance((await sfiAvaxContract.balanceOf(account) / 10**18));
+      }
 
-        setStakedSFIBalance(parseSFIBalance(await stakeContract.balanceOf(account)));
-        setStakedPGLBalance(parseBalance(await stakePGLContract.balanceOf(account)));
+      setStakedSFIBalance(parseSFIBalance(await stakeContract.balanceOf(account)));
+      setStakedSL3Balance(parseSFIBalance(await stakeSL3Contract.balanceOf(account)));
+      setStakedPGLBalance(parseBalance(await stakePGLContract.balanceOf(account)));
 
-        if(!sl3Balance && !earnedBalanceFromSL3 && !sl3AvaxBalance){
-          setSL3Balance(parseSFIBalance(await sl3Contract.balanceOf(account)));
-          setEarnedBalanceFromSL3(parseSFIBalance(await stakeSL3Contract.earned(account)));
-          setEarnedBalanceFromSL3PGL(parseSFIBalance(await stakeSL3PGLContract.earned(account)))
-          setSL3AvaxBalance((await sl3AvaxContract.balanceOf(account) / 10**18));
+      if(!sl3Balance && !earnedBalanceFromSL3 && !sl3AvaxBalance){
+        setSL3Balance(parseSFIBalance(await sl3Contract.balanceOf(account)));
+        setEarnedBalanceFromSL3(parseSFIBalance(await stakeSL3Contract.earned(account)));
+        setEarnedBalanceFromSL3PGL(parseSFIBalance(await stakeSL3PGLContract.earned(account)))
+        setSL3AvaxBalance((await sl3AvaxContract.balanceOf(account) / 10**18));
       }
     
-        setStakedSL3Balance(parseSFIBalance(await stakeSL3Contract.balanceOf(account)));
-        setStakedSL3PGLBalance(parseBalance(await stakeSL3PGLContract.balanceOf(account)));
-    
-        // Pretty sure this should be replaced with Vitalik's address to calc burn on mainnet... ?
-        await tokenContract.balanceOf("0xCCA162Fe23AB614174bC99A9e9019d211133a8d1")
-        .then(balance =>
-            tokenContract.decimals()
-            .then((decimals) => {
-                let burned = balance.div(10**decimals);
-                setBurnedSFI(burned.toString());
-            })
+      setStakedSL3Balance(parseSFIBalance(await stakeSL3Contract.balanceOf(account)));
+      setStakedSL3PGLBalance(parseBalance(await stakeSL3PGLContract.balanceOf(account)));
+  
+      // Pretty sure this should be replaced with Vitalik's address to calc burn on mainnet... ?
+      await tokenContract.balanceOf("0xCCA162Fe23AB614174bC99A9e9019d211133a8d1")
+      .then(balance =>
+          tokenContract.decimals()
+          .then((decimals) => {
+              let burned = balance.div(10**decimals);
+              setBurnedSFI(burned.toString());
+          })
+      );
+
+      await sl3Contract.balanceOf("0xCCA162Fe23AB614174bC99A9e9019d211133a8d1")
+      .then(balance =>
+          tokenContract.decimals()
+          .then((decimals) => {
+              let burned = balance.div(10**decimals);
+              setBurnedSL3(burned.toString());
+          })
         );
 
-        await sl3Contract.balanceOf("0xCCA162Fe23AB614174bC99A9e9019d211133a8d1")
-        .then(balance =>
-            tokenContract.decimals()
-            .then((decimals) => {
-                let burned = balance.div(10**decimals);
-                setBurnedSL3(burned.toString());
-            })
-        );
+      // Calc APR and TVL for SFI single asset pool
 
-        // Calc APR and TVL for single asset pool
-
-        const rewardRateSFI = await stakeContract.rewardRate();
-        const totalStakedSFI = await stakeContract.totalSupply();
-        const sfiTVL = ((await stakeContract.totalSupply()) / 10**9) * priceSFI;
+      const getAPRandTVLforRFI = async (contract, price, addAprToState, addTvlToState) => {
+        const rewardRateSFI = await contract.rewardRate();
+        const totalStakedSFI = await contract.totalSupply();
+        const sfiTVL = ((await contract.totalSupply()) / 10**9) * price;
         const lSfiApr = ((rewardRateSFI.toString() * 10**9) * 31536000 * 100) / (totalStakedSFI.toString() * 10**9);
 
-        setApr(lSfiApr);
+        addAprToState(lSfiApr);
+        addTvlToState(sfiTVL);
 
-        setSfiTVL(sfiTVL);
+        console.log(price);
+      }
 
-        // Calc APR and TVL for SFI/AVAX pool
-        const reserves = await sfiAvaxContract.getReserves();
+      getAPRandTVLforRFI(stakeContract, priceSFI, setApr, setSfiTVL);
+      getAPRandTVLforRFI(stakeSL3Contract, priceSL3, setSL3Apr, setSL3TVL);
 
-        const lockedSFI = reserves[0].toString();
-        const lockedAvax = reserves[1].toString();
+      // Calc APR and TVL for SFI/AVAX pool
+      const reserves = await sfiAvaxContract.getReserves();
 
-        const sfiAvaxTotalSupply = (await sfiAvaxContract.totalSupply()).toString() / 10**18;
-        const sfiAvaxStaked = (await sfiAvaxContract.balanceOf(stakingRewardsPGLAddress)) * 10**18;
-        const lSfiAvaxApr = ((rewardRateSFI.toString() * 31536000*100)/(2 * lockedSFI));
+      const lockedSFI = reserves[0].toString();
+      const lockedAvax = reserves[1].toString();
 
-        setSfiAvaxTVL((parseSFIBalance(lockedSFI) * priceSFI) + (parseBalance(lockedAvax) * priceAvax))
+      const sfiAvaxTotalSupply = (await sfiAvaxContract.totalSupply()).toString() / 10**18;
+      const sfiAvaxStaked = (await sfiAvaxContract.balanceOf(stakingRewardsPGLAddress)) * 10**18;
+      const lSfiAvaxApr = (((await stakeContract.rewardRate()).toString() * 31536000*100)/(2 * lockedSFI));
+      // const lSfiAvaxApr = ((rewardRateSFI.toString() * 31536000*100)/(2 * lockedSFI));
 
-        const totalStakedSFIAvax = parseBalance(await stakePGLContract.totalSupply());
-        const rewardRateSFIAvax = await stakePGLContract.rewardRate();
 
-        setSFIAvaxApr(lSfiAvaxApr);
+      setSfiAvaxTVL((parseSFIBalance(lockedSFI) * priceSFI) + (parseBalance(lockedAvax) * priceAvax))
+
+      const totalStakedSFIAvax = parseBalance(await stakePGLContract.totalSupply());
+      const rewardRateSFIAvax = await stakePGLContract.rewardRate();
+
+      setSFIAvaxApr(lSfiAvaxApr);
     }
 
-    if(tokenContract && stakeContract){
+    if(tokenContract && sl3Contract && stakeContract && stakeSL3Contract){
         setBals();
     }
 
@@ -446,15 +455,15 @@ const Farm = () => {
         const target = e.target;
         const amount = target.amount.value;
         handleWithdraw(amount, stakeContract, RFI_TOKEN_DECIMAL);}}>
-    <input
-        type="text"
-        id="Stake SFI"
-        name="amount" 
-        placeholder="Amount to Unstake"
-        required
-    />
-    <button className="bluebut">Unstake</button>
-        </form>
+        <input
+            type="text"
+            id="Stake SFI"
+            name="amount" 
+            placeholder="Amount to Unstake"
+            required
+        />
+        <button className="bluebut">Unstake</button>
+      </form>
       </div>
         </div>
       </div>
@@ -553,9 +562,21 @@ const Farm = () => {
             <p className="lowertext3">
               Withdraw:
             </p>
-      <form className="StakeformW" action="">
-      <input type="text" id="Stake SFI" name="Stake SFI" placeholder="Amount" />
-      <input className="bluebut" type="submit" value="Submit" />
+        <form
+          className="StakeformW"
+          onSubmit={(e) => {
+          e.preventDefault();
+          const target = e.target;
+          const amount = target.amount.value;
+          handleWithdraw(amount, stakePGLContract, TOKEN_DECIMAL);}}>
+        <input
+            type="text"
+            id="Stake SFI"
+            name="amount" 
+            placeholder="Amount to Unstake"
+            required
+        />
+        <button className="bluebut">Unstake</button>
       </form>
       </div>
         </div>
@@ -569,6 +590,7 @@ const Farm = () => {
             APR
           </p>
           <div className="APRprint">
+            <p className="centerT">{sl3Apr !== undefined ? sl3Apr.toFixed(2) + '%' : "Loading"}</p>
           </div>
           <div className="linebreak">
           </div>
@@ -576,6 +598,7 @@ const Farm = () => {
             Earned SFI
           </p>
           <div className="Earnprint">
+          <p className="centerT">{earnedBalanceFromSL3 !== undefined ? parseInt(earnedBalanceFromSL3).toFixed(2) : "Loading"}</p>
           </div>
           <input className="bluebut2"type="submit" value="Claim" />
         </div>
@@ -586,6 +609,7 @@ const Farm = () => {
           TVL
           </p>
           <div className="TVLprint">
+            <p className="centerT">${sl3TVL ? sl3TVL.toFixed(2) : "Loading"}</p>
           </div>
           <div className="linebreak">
           </div>
@@ -610,16 +634,27 @@ const Farm = () => {
             <p className="lowertext2">
               Stake:
             </p>
-        <form className="Stakeform" action="">
-
-            <input type="text" id="Stake SFI" name="Stake SFI" placeholder="Amount" />
-
-            <input className="purpbut"type="submit" value="Submit" />
-        </form>
+            <form
+              className="Stakeform"
+              onSubmit={(e) => {
+              e.preventDefault();
+              const target = e.target;
+              const amount = target.amount.value;
+              handleStake(amount, RFI_TOKEN_DECIMAL, sl3Contract, stakeSL3Contract)}}>
+            <input
+                type="text"
+                id="Stake SFI"
+                name="amount" 
+                placeholder="Amount to Stake"
+                required
+            />
+            <button className="bluebut">Stake</button>
+            </form>
         <p className="lowertext4">
             Staked SL3:
         </p>
         <div className="stakedtokens">
+          <p className="centerT">{stakedSL3Balance !== undefined ? stakedSL3Balance : "Loading"}</p>
         </div>
         </div>
         </div>
@@ -631,12 +666,22 @@ const Farm = () => {
             <p className="lowertext3">
               Withdraw:
             </p>
-      <form className="StakeformW" action="">
-
-      <input type="text" id="Stake SFI" name="Stake SFI" placeholder="Amount" />
-
-      <input className="purpbut" type="submit" value="Submit" />
-      </form>
+            <form
+              className="StakeformW"
+              onSubmit={(e) => {
+              e.preventDefault();
+              const target = e.target;
+              const amount = target.amount.value;
+              handleWithdraw(amount, stakeSL3Contract, RFI_TOKEN_DECIMAL);}}>
+              <input
+                  type="text"
+                  id="Stake SFI"
+                  name="amount" 
+                  placeholder="Amount to Unstake"
+                  required
+              />
+              <button className="bluebut">Unstake</button>
+            </form>
       </div>
         </div>
 
