@@ -69,6 +69,8 @@ const Farm = () => {
     const [yourSL3TVL, setYourSL3TVL] = useState();
     const [sfiMC, setSFIMC] = useState();
     const [sl3MC, setSL3MC] = useState();
+    const [sfiTotalLiq, setSfiTotalLiq] = useState();
+    const [sl3TotalLiq, setSl3TotalLiq] = useState();
     const [sfiAvaxTVL, setSfiAvaxTVL] = useState();
     const [yourSfiAvaxTVL, setYourSfiAvaxTVL] = useState();
     const [sl3AvaxTVL, setSL3AvaxTVL] = useState();
@@ -110,16 +112,24 @@ const Farm = () => {
         let rawPriceSFI;
         let rawPriceSL3;
         let ethPrice;
+        let totalLiquiditySFI;
+        let totalLiquiditySL3;
 
         await gql.request(QUERIES.TOKEN,{
         id: "0x1f1fe1ef06ab30a791d6357fdf0a7361b39b1537"
         })
-        .then(res => rawPriceSFI = res.token.derivedETH);
+        .then(res => {
+          rawPriceSFI = res.token.derivedETH;
+          totalLiquiditySFI = res.token.totalLiquidity;
+        });
 
         await gql.request(QUERIES.TOKEN,{
           id: "0x2841a8a2ce98a9d21ad8c3b7fc481527569bd7bb"
           })
-          .then(res => rawPriceSL3 = res.token.derivedETH);
+          .then(res => {
+            rawPriceSL3 = res.token.derivedETH
+            totalLiquiditySL3 = res.token.totalLiquidity
+          });
 
         await gql.request(QUERIES.AVAXPRICE,{
         id: 1,
@@ -130,6 +140,8 @@ const Farm = () => {
         setPriceSFI(rawPriceSFI * ethPrice);
         setPriceSL3(rawPriceSL3 * ethPrice);
         setPriceAvax(ethPrice);
+        setSfiTotalLiq(totalLiquiditySFI);
+        setSl3TotalLiq(totalLiquiditySL3);
 
         // console.log("Price:", rawPriceSFI * ethPrice, "SFI:", priceSFI, "AVAX:", ethPrice, "Blocknumber:", blockNumber);
 
@@ -267,24 +279,6 @@ const Farm = () => {
         setYourSL3AvaxTVL,
         setSL3AvaxApr
       )
-
-      // const reserves = await sfiAvaxContract.getReserves();
-
-      // const lockedSFI = reserves[0].toString();
-      // const lockedAvax = reserves[1].toString();
-
-      // const sfiAvaxTotalSupply = (await sfiAvaxContract.totalSupply()).toString() / 10**18;
-      // const sfiAvaxStaked = (await sfiAvaxContract.balanceOf(stakingRewardsPGLAddress)) * 10**18;
-      // const lSfiAvaxApr = (((await stakeContract.rewardRate()).toString() * 31536000*100)/(2 * lockedSFI));
-      // // const lSfiAvaxApr = ((rewardRateSFI.toString() * 31536000*100)/(2 * lockedSFI));
-
-
-      // setSfiAvaxTVL((parseSFIBalance(lockedSFI) * priceSFI) + (parseBalance(lockedAvax) * priceAvax))
-
-      // const totalStakedSFIAvax = parseBalance(await stakePGLContract.totalSupply());
-      // const rewardRateSFIAvax = await stakePGLContract.rewardRate();
-
-      // setSFIAvaxApr(lSfiAvaxApr);
     }
 
     if(tokenContract && sl3Contract && stakeContract && stakeSL3Contract){
@@ -363,6 +357,7 @@ const Farm = () => {
         <div className="linebreakHome">
         </div>
         <div className="homebarbox">
+          <p className="centerT">{sfiTotalLiq ? `$${parseInt(sfiTotalLiq).toFixed(2)}` : "Loading"}</p>
         </div>
       </div>
       <div className="SFIMC">
@@ -404,6 +399,7 @@ const Farm = () => {
         <div className="linebreakHome">
         </div>
         <div className="homebarbox">
+          <p className="centerT">{sl3TotalLiq ? `$${parseInt(sl3TotalLiq).toFixed(2)}` : "Loading"}</p>
         </div>
       </div>
       <div className="SFIMC">
@@ -459,7 +455,7 @@ const Farm = () => {
           TVL
           </p>
           <div className="TVLprint">
-            <p className="centerT">${sfiTVL ? sfiTVL.toFixed(2) : "Loading"}</p>
+            <p className="centerT">{sfiTVL ? `$${sfiTVL.toFixed(2)}` : "Loading"}</p>
           </div>
           <div className="linebreak">
           </div>
@@ -469,7 +465,7 @@ const Farm = () => {
              TVL
             </p>
             <div className="TVLprint2">
-              <p className="centerT">${yourSFITVL !== undefined ? yourSFITVL.toFixed(4) : "Loading"}</p>              
+              <p className="centerT">{yourSFITVL !== undefined ? `$${yourSFITVL.toFixed(4)}` : "Loading"}</p>              
             </div>
         </div>
         <div className="StakePGL">
@@ -577,7 +573,7 @@ const Farm = () => {
           TVL
           </p>
           <div className="TVLprint">
-            <p className="centerT">${sfiAvaxTVL ? sfiAvaxTVL.toFixed(2) : "Loading"}</p>
+            <p className="centerT">{sfiAvaxTVL ? `$${sfiAvaxTVL.toFixed(2)}` : "Loading"}</p>
           </div>
           <div className="linebreak">
           </div>
@@ -587,7 +583,7 @@ const Farm = () => {
              TVL
             </p>
             <div className="TVLprint2">
-              <p className="centerT">${yourSfiAvaxTVL !== undefined ? yourSfiAvaxTVL.toFixed() : "Loading"}</p>              
+              <p className="centerT">{yourSfiAvaxTVL !== undefined ? `$${yourSfiAvaxTVL.toFixed()}` : "Loading"}</p>              
             </div>
         </div>
         <div className="StakePGL">
@@ -686,7 +682,7 @@ const Farm = () => {
           TVL
           </p>
           <div className="TVLprint">
-            <p className="centerT">${sl3TVL ? sl3TVL.toFixed(2) : "Loading"}</p>
+            <p className="centerT">{sl3TVL ? `$${sl3TVL.toFixed(2)}` : "Loading"}</p>
           </div>
           <div className="linebreak">
           </div>
@@ -696,7 +692,7 @@ const Farm = () => {
              TVL
             </p>
             <div className="TVLprint2">
-              <p className="centerT">${yourSL3TVL !== undefined ? yourSL3TVL.toFixed() : "Loading"}</p>              
+              <p className="centerT">{yourSL3TVL !== undefined ? `$${yourSL3TVL.toFixed()}` : "Loading"}</p>              
             </div>
         </div>
         <div className="StakePGL">
@@ -796,7 +792,7 @@ const Farm = () => {
           TVL
           </p>
           <div className="TVLprint">
-            <p className="centerT">${sl3AvaxTVL !== undefined ? sl3AvaxTVL.toFixed(2) : "Loading"}</p>
+            <p className="centerT">{sl3AvaxTVL !== undefined ? `$${sl3AvaxTVL.toFixed(2)}` : "Loading"}</p>
           </div>
           <div className="linebreak">
           </div>
@@ -806,7 +802,7 @@ const Farm = () => {
              TVL
             </p>
             <div className="TVLprint2">
-              <p className="centerT">${yourSL3AvaxTVL !== undefined ? yourSL3AvaxTVL.toFixed() : "Loading"}</p>
+              <p className="centerT">{yourSL3AvaxTVL !== undefined ? `$${yourSL3AvaxTVL.toFixed()}` : "Loading"}</p>
             </div>
         </div>
         <div className="StakePGL">
