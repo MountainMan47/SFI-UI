@@ -469,7 +469,7 @@ const Farm = () => {
              TVL
             </p>
             <div className="TVLprint2">
-              <p className="centerT">${yourSFITVL ? yourSFITVL.toFixed(4) : "Loading"}</p>              
+              <p className="centerT">${yourSFITVL !== undefined ? yourSFITVL.toFixed(4) : "Loading"}</p>              
             </div>
         </div>
         <div className="StakePGL">
@@ -587,7 +587,7 @@ const Farm = () => {
              TVL
             </p>
             <div className="TVLprint2">
-              <p className="centerT">${yourSfiAvaxTVL ? yourSfiAvaxTVL.toFixed() : "Loading"}</p>              
+              <p className="centerT">${yourSfiAvaxTVL !== undefined ? yourSfiAvaxTVL.toFixed() : "Loading"}</p>              
             </div>
         </div>
         <div className="StakePGL">
@@ -696,7 +696,7 @@ const Farm = () => {
              TVL
             </p>
             <div className="TVLprint2">
-              <p className="centerT">${yourSL3TVL ? yourSL3TVL.toFixed() : "Loading"}</p>              
+              <p className="centerT">${yourSL3TVL !== undefined ? yourSL3TVL.toFixed() : "Loading"}</p>              
             </div>
         </div>
         <div className="StakePGL">
@@ -806,7 +806,7 @@ const Farm = () => {
              TVL
             </p>
             <div className="TVLprint2">
-              <p className="centerT">${yourSL3AvaxTVL ? yourSL3AvaxTVL.toFixed() : "Loading"}</p>
+              <p className="centerT">${yourSL3AvaxTVL !== undefined ? yourSL3AvaxTVL.toFixed() : "Loading"}</p>
             </div>
         </div>
         <div className="StakePGL">
