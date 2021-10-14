@@ -12,7 +12,7 @@ export default {
         43114: "0x0Eventually",
     },
     stakingRewardSL3PGL: {
-        43113: "0x2fbabfe132a677F385ac41821d7e325EA298F1d1",
+        43113: "0x0b83Bf25F14518d5Edfd6C482d9D9fc93533559e",
         43114: "0x0Eventually",
     }
 }
