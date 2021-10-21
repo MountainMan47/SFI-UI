@@ -263,7 +263,7 @@ const Farm = () => {
         stakePGLContract, 
         priceSFI, 
         stakedPGLBalance,
-        stakePGLContract,
+        stakeContract,
         setSfiAvaxTVL,
         setYourSfiAvaxTVL,
         setSFIAvaxApr);
@@ -271,10 +271,10 @@ const Farm = () => {
       getAPRandTVLforPair(
         sl3AvaxContract,
         stakingRewardsSL3AvaxAddress,
-        stakeSL3Contract,
+        stakeSL3PGLContract,
         priceSL3,
         stakedSL3PGLBalance,
-        stakeSL3PGLContract,
+        stakeSL3Contract,
         setSL3AvaxTVL,
         setYourSL3AvaxTVL,
         setSL3AvaxApr

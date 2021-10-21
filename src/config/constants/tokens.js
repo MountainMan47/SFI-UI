@@ -3,7 +3,7 @@ const tokens = {
         symbol: "SFI",
         address: {
             43113: "0xCE7593a8ba23A4Ad8DDb4e242Eaf251a30190325",
-            43114: "0x0Eventually",
+            43114: "0x1F1FE1eF06ab30a791d6357FdF0a7361B39b1537",
         },
         decimals: 9,
     },
@@ -11,7 +11,7 @@ const tokens = {
         symbol: "PGL",
         address: {
             43113: "0x096Fb607aBac2f6401D635A03C0cc3dF265BfF19",
-            43114: "0x0Eventually",
+            43114: "0x18c8e1346d26824063706242adb391ddb16c293e",
         }
     },
     sl3: {
