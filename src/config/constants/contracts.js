@@ -9,10 +9,10 @@ export default {
     },
     stakingRewardSL3: {
         43113: "0x8162cccb5628e200869f34B8b068bBA70E80dBdA",
-        43114: "0x0Eventually",
+        43114: "0xea399B7354864B53C760d8B7c83086208767E1f9", // Just using stakingReward above as placeholder
     },
     stakingRewardSL3PGL: {
         43113: "0x0b83Bf25F14518d5Edfd6C482d9D9fc93533559e",
-        43114: "0x0Eventually",
+        43114: "0xD9c91b8aF2317a82E1986A8D3De687437Ead50Dd", // Just using stakingRewardPGL above as placeholder
     }
 }

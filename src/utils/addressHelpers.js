@@ -5,7 +5,8 @@ import { Address } from '../config/constants/types';
 export const getAddress = (address) => {
     const mainNetChainId = 43114;
     const chainId = 43113; // will eventually switch this to env variable
-    return address[chainId] ? address[chainId] : address[mainNetChainId];
+    return address[mainNetChainId];
+    // return address[chainId] ? address[chainId] : address[mainNetChainId];
 }
 
 export const getStakingRewardsAddress = () => {

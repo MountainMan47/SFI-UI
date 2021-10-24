@@ -179,7 +179,7 @@ const Farm = () => {
       setStakedSL3PGLBalance(parseBalance(await stakeSL3PGLContract.balanceOf(account)));
   
       // Pretty sure this should be replaced with Vitalik's address to calc burn on mainnet... ?
-      await tokenContract.balanceOf("0xCCA162Fe23AB614174bC99A9e9019d211133a8d1")
+      await tokenContract.balanceOf("0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B")
       .then(balance =>
           tokenContract.decimals()
           .then((decimals) => {
@@ -188,7 +188,7 @@ const Farm = () => {
           })
       );
 
-      await sl3Contract.balanceOf("0xCCA162Fe23AB614174bC99A9e9019d211133a8d1")
+      await sl3Contract.balanceOf("0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B")
       .then(balance =>
           tokenContract.decimals()
           .then((decimals) => {
