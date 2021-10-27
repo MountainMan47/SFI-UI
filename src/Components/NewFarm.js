@@ -140,11 +140,8 @@ const Farm = () => {
         setPriceSFI(rawPriceSFI * ethPrice);
         setPriceSL3(rawPriceSL3 * ethPrice);
         setPriceAvax(ethPrice);
-        setSfiTotalLiq(totalLiquiditySFI);
-        setSl3TotalLiq(totalLiquiditySL3);
-
-        // console.log("Price:", rawPriceSFI * ethPrice, "SFI:", priceSFI, "AVAX:", ethPrice, "Blocknumber:", blockNumber);
-
+        setSfiTotalLiq(totalLiquiditySFI * (rawPriceSFI * ethPrice));
+        setSl3TotalLiq(totalLiquiditySL3 * (rawPriceSL3 * ethPrice));
     }
 
     if(blockNumber){
@@ -208,14 +205,14 @@ const Farm = () => {
         addAprToState, 
         addTvlToState, 
         addYourTvlToState, 
-        addMCToState) => {
+        addMCToState) => { 
+
           const rewardRateSFI = await contract.rewardRate();
           const totalStakedSFI = await contract.totalSupply();
           const sfiTVL = ((await contract.totalSupply()) / 10**9) * price;
           const lSfiApr = ((rewardRateSFI.toString() * 10**9) * 31536000 * 100) / (totalStakedSFI.toString() * 10**9);
           const marketCap = (((await tokenContract.totalSupply()).toString() / 10**9) - burnedToken) * price;
-          const yourTVL = ((yourStaked/totalStakedSFI) *  sfiTVL) * 10**9;
-
+          const yourTVL = ((yourStaked/totalStakedSFI) *  sfiTVL) * 10**9;          
           addAprToState(lSfiApr);
           addTvlToState(sfiTVL);
           addYourTvlToState(yourTVL);
