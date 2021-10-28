@@ -162,7 +162,7 @@ const Farm = () => {
           setSfiAvaxBalance((await sfiAvaxContract.balanceOf(account) / 10**18));
       }
 
-      setStakedSFIBalance(parseSFIBalance(await stakeContract.balanceOf(account)) * .98);
+      setStakedSFIBalance(parseSFIBalance(await stakeContract.balanceOf(account)));
       setStakedPGLBalance(parseBalance(await stakePGLContract.balanceOf(account)));
 
       if(!sl3Balance && !earnedBalanceFromSL3 && !sl3AvaxBalance){
@@ -172,7 +172,7 @@ const Farm = () => {
         setSL3AvaxBalance((await sl3AvaxContract.balanceOf(account) / 10**18));
       }
     
-      setStakedSL3Balance(parseSFIBalance(await stakeSL3Contract.balanceOf(account)) * .95);
+      setStakedSL3Balance(parseSFIBalance(await stakeSL3Contract.balanceOf(account)));
       setStakedSL3PGLBalance(parseBalance(await stakeSL3PGLContract.balanceOf(account)));
   
       // Pretty sure this should be replaced with Vitalik's address to calc burn on mainnet... ?
