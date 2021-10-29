@@ -162,7 +162,7 @@ const Farm = () => {
           setSfiAvaxBalance((await sfiAvaxContract.balanceOf(account) / 10**18));
       }
 
-      setStakedSFIBalance(parseSFIBalance(await stakeContract.balanceOf(account)));
+      setStakedSFIBalance(parseInt(parseSFIBalance(await stakeContract.balanceOf(account))));
       setStakedPGLBalance(parseBalance(await stakePGLContract.balanceOf(account)));
 
       if(!sl3Balance && !earnedBalanceFromSL3 && !sl3AvaxBalance){
