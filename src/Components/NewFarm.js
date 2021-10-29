@@ -622,7 +622,7 @@ const Farm = () => {
                 Staked PGL:
             </p>
                 <div className="stakedtokens">
-                    <p className="centerT">{stakedPGLBalance !== undefined ? stakedPGLBalance : "Loading"}</p>
+                    <p className="centerT">{stakedPGLBalance !== undefined ? parseInt(stakedPGLBalance).toFixed(6) : "Loading"}</p>
                 </div>
             </div>
         </div>
@@ -835,7 +835,7 @@ const Farm = () => {
             Staked PGL:
         </p>
         <div className="stakedtokens">
-          <p className="centerT">{stakedSL3PGLBalance !== undefined ? stakedSL3PGLBalance : "Loading"}</p>
+          <p className="centerT">{stakedSL3PGLBalance !== undefined ? parseInt(stakedSL3PGLBalance).toFixed(6) : "Loading"}</p>
         </div>
         </div>
         </div>
