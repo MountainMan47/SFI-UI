@@ -240,27 +240,28 @@ const Farm = () => {
         const lockedSFI = reserves[0].toString();
         const lockedAvax = reserves[1].toString();
   
-        const sfiAvaxTotalSupply = (await pairContract.totalSupply()).toString() / 10**18;
+        const sfiAvaxTotalSupply = parseBalance((await pairContract.totalSupply()).toString());
         const sfiAvaxStaked = (await pairContract.balanceOf(pairStakingContractAddress)) * 10**18;
         const lSfiAvaxApr = (((await stakeContract.rewardRate()).toString() * 31536000*100)/(2 * lockedSFI));
-
         const totalStakedSFIAvax = parseBalance(await pairStakeContract.totalSupply());
+
+
         const yourTVL = (yourStaked/sfiAvaxStaked) * totalStakedSFIAvax;
         const rewardRateSFIAvax = await pairStakeContract.rewardRate();        
-  
-        addPairTVLtoState((parseSFIBalance(lockedSFI) * priceToken) + (parseBalance(lockedAvax) * priceAvax)*(totalStakedSFIAvax * sfiAvaxTotalSupply))
+
+        addPairTVLtoState(((parseSFIBalance(lockedSFI) * priceToken) + (parseBalance(lockedAvax) * priceAvax)) * (totalStakedSFIAvax / sfiAvaxTotalSupply));
         addYourTvlToState(yourTVL)
-  
         addPairAPRtoState(lSfiAvaxApr);
+        
       }
 
       getAPRandTVLforPair(
         sfiAvaxContract, 
         stakingRewardsPGLAddress, 
-        stakePGLContract, 
+        stakeContract, 
         priceSFI, 
         stakedPGLBalance,
-        stakeContract,
+        stakePGLContract,
         setSfiAvaxTVL,
         setYourSfiAvaxTVL,
         setSFIAvaxApr);
@@ -268,10 +269,10 @@ const Farm = () => {
       getAPRandTVLforPair(
         sl3AvaxContract,
         stakingRewardsSL3AvaxAddress,
-        stakeSL3PGLContract,
+        stakeSL3Contract,
         priceSL3,
         stakedSL3PGLBalance,
-        stakeSL3Contract,
+        stakeSL3PGLContract,
         setSL3AvaxTVL,
         setYourSL3AvaxTVL,
         setSL3AvaxApr
