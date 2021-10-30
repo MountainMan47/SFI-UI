@@ -42,7 +42,7 @@ export function formatEtherscanLink(type, data) {
  *
  * @returns {string}
  */
-export const parseBalance = (balance, decimals = 18, decimalsToDisplay = 9) =>
+export const parseBalance = (balance, decimals = 18, decimalsToDisplay = 4) =>
   Number(formatUnits(balance, decimals)).toFixed(decimalsToDisplay);
 
   export const parseSFIBalance = (balance, decimals = 9, decimalsToDisplay = 3) =>

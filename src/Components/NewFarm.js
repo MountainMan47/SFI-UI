@@ -593,7 +593,7 @@ const Farm = () => {
             Available PGL:
           </p>
           <div className="availabletokens">
-            <p className="centerT">{sfiAvaxBalance ? sfiAvaxBalance.toFixed(6) : "Loading"}</p>
+            <p className="centerT">{sfiAvaxBalance !== undefined ? sfiAvaxBalance.toFixed(6) : "Loading"}</p>
           </div>
           <div className="linebreak2">
           </div>
@@ -812,7 +812,7 @@ const Farm = () => {
             Available PGL:
           </p>
           <div className="availabletokens">
-          <p className="centerT">{sl3AvaxBalance ? sl3AvaxBalance.toFixed(6) : "Loading"}</p>
+          <p className="centerT">{sl3AvaxBalance !== undefined ? sl3AvaxBalance.toFixed(6) : "Loading"}</p>
           </div>
           <div className="linebreak2">
           </div>
