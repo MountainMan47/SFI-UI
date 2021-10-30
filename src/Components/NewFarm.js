@@ -250,7 +250,7 @@ const Farm = () => {
         const sfiAvaxTVL = ((parseSFIBalance(lockedSFI) * priceToken) + (parseBalance(lockedAvax) * priceAvax)) * (totalStakedSFIAvax / sfiAvaxTotalSupply);
         const lSfiAvaxApr = (((await pairStakeContract.rewardRate()).toString() * 31536000 * 100 * priceSFI)/(sfiAvaxTVL * 10**9));
 
-        const yourTVL = (yourStaked/sfiAvaxStaked) * totalStakedSFIAvax;
+        const yourTVL = (yourStaked/sfiAvaxStaked) * sfiAvaxTVL;
         const rewardRateSFIAvax = await pairStakeContract.rewardRate();        
 
         addPairTVLtoState(sfiAvaxTVL);
@@ -585,7 +585,7 @@ const Farm = () => {
              TVL
             </p>
             <div className="TVLprint2">
-              <p className="centerT">{yourSfiAvaxTVL !== undefined ? `$${yourSfiAvaxTVL.toFixed()}` : "Loading"}</p>              
+              <p className="centerT">{yourSfiAvaxTVL !== undefined ? `$${yourSfiAvaxTVL.toFixed(2)}` : "Loading"}</p>              
             </div>
         </div>
         <div className="StakePGL">
@@ -804,7 +804,7 @@ const Farm = () => {
              TVL
             </p>
             <div className="TVLprint2">
-              <p className="centerT">{yourSL3AvaxTVL !== undefined ? `$${yourSL3AvaxTVL.toFixed()}` : "Loading"}</p>
+              <p className="centerT">{yourSL3AvaxTVL !== undefined ? `$${yourSL3AvaxTVL.toFixed(2)}` : "Loading"}</p>
             </div>
         </div>
         <div className="StakePGL">
