@@ -197,6 +197,7 @@ const Farm = () => {
       // Calc APR and TVL for SFI single asset pool
 
       const getAPRandTVLforRFI = async (
+        token,
         contract, 
         tokenContract, 
         price, 
@@ -210,7 +211,9 @@ const Farm = () => {
           const rewardRateSFI = await contract.rewardRate();
           const totalStakedSFI = await contract.totalSupply();
           const sfiTVL = ((await contract.totalSupply()) / 10**9) * price;
-          const lSfiApr = ((rewardRateSFI.toString() * 10**9) * 31536000 * 100) / (totalStakedSFI.toString() * 10**9);
+          const lSfiApr = token === "SFI" 
+            ? ((rewardRateSFI.toString() * 10**9) * 31536000 * 100) / (totalStakedSFI.toString() * 10**9) 
+            : (((rewardRateSFI.toString() * 31536000 * 100) * priceSFI) / (sfiTVL) / 10**9);
           const marketCap = (((await tokenContract.totalSupply()).toString() / 10**9) - burnedToken) * price;
           const yourTVL = ((yourStaked/totalStakedSFI) *  sfiTVL) * 10**9;          
           addAprToState(lSfiApr);
@@ -220,8 +223,8 @@ const Farm = () => {
         }
 
       // Set SFI and SL3 stats
-      getAPRandTVLforRFI(stakeContract, tokenContract, priceSFI, burnedSFI, stakedSFIBalance, setApr, setSfiTVL, setYourSFITVL, setSFIMC);
-      getAPRandTVLforRFI(stakeSL3Contract, sl3Contract, priceSL3, burnedSL3, stakedSL3Balance, setSL3Apr, setSL3TVL, setYourSL3TVL, setSL3MC);
+      getAPRandTVLforRFI("SFI", stakeContract, tokenContract, priceSFI, burnedSFI, stakedSFIBalance, setApr, setSfiTVL, setYourSFITVL, setSFIMC);
+      getAPRandTVLforRFI("SL3", stakeSL3Contract, sl3Contract, priceSL3, burnedSL3, stakedSL3Balance, setSL3Apr, setSL3TVL, setYourSL3TVL, setSL3MC);
 
       // Calc APR and TVL for PGL pools
 
@@ -252,7 +255,7 @@ const Farm = () => {
         addPairTVLtoState(((parseSFIBalance(lockedSFI) * priceToken) + (parseBalance(lockedAvax) * priceAvax)) * (totalStakedSFIAvax / sfiAvaxTotalSupply));
         addYourTvlToState(yourTVL)
         addPairAPRtoState(lSfiAvaxApr);
-        
+
       }
 
       getAPRandTVLforPair(
