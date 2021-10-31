@@ -1,4 +1,4 @@
-import background from './CSS/Aurora_background.png';
+import background from './CSS/aurora_background.png';
 
 const Launch = ({ unlock }) => {
     return (
