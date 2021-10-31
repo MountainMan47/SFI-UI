@@ -676,7 +676,7 @@ const Farm = () => {
           <div className="Earnprint">
           <p className="centerT">{earnedBalanceFromSL3 !== undefined ? parseInt(earnedBalanceFromSL3).toFixed(2) : "Loading"}</p>
           </div>
-          <input className="bluebut2"type="submit" value="Claim" />
+          <input className="bluebut2" type="submit" onClick={() => handleGetReward(stakeSL3Contract)} value="Claim" />
         </div>
         <div className="TVLs">
           <p className="lowertextTVL">
@@ -695,7 +695,7 @@ const Farm = () => {
              TVL
             </p>
             <div className="TVLprint2">
-              <p className="centerT">{yourSL3TVL !== undefined ? `$${yourSL3TVL.toFixed()}` : "Loading"}</p>              
+              <p className="centerT">{yourSL3TVL !== undefined ? `$${yourSL3TVL.toFixed(2)}` : "Loading"}</p>              
             </div>
         </div>
         <div className="StakePGL">
@@ -703,7 +703,7 @@ const Farm = () => {
             Available SL3:
           </p>
           <div className="availabletokens">
-          <p className="centerT">{sl3Balance !== undefined ? parseInt(sl3Balance).toFixed() : "Loading"}</p>
+          <p className="centerT">{sl3Balance !== undefined ? parseInt(sl3Balance).toFixed(2) : "Loading"}</p>
           </div>
           <div className="linebreak2">
           </div>
