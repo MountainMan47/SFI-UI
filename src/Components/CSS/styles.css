@@ -308,9 +308,6 @@ transform: translateY(-50%);
     background-color: #0CECDD ;
     color: #333333;
     padding: 0px;
-
-
-
     position: absolute;
     top: 102px;
     right: 95px;
@@ -322,17 +319,8 @@ transform: translateY(-50%);
     cursor: pointer;
   }
 
-
-
   .bluebut2:hover {
     background-color:  #00ff99;}
-
-
-
-
-
-
-    
 
 .FarmsScreen {
   position: absolute;
@@ -340,6 +328,11 @@ transform: translateY(-50%);
   width: 100%;
 }
 
+.LaunchScreen {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+}
 
 .portrait {
   height: 80px;
